@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 
 export type NpmSecurityIssueCode =
@@ -15,7 +14,7 @@ export type NpmSecurityIssue = {
 };
 
 const forbiddenRegistryConfig = new Set([".npmrc", ".yarnrc", ".yarnrc.yml", "bunfig.toml"]);
-const dependencySections = ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"] as const;
+const dependencySections = ["dependencies", "devDependencies", "optionalDependencies"] as const;
 const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
 const publicRegistryHost = "registry.npmjs.org";
 const lockfileName = /^(?:bun\.lock|package-lock\.json|pnpm-lock\.yaml|yarn\.lock)$/u;
@@ -131,7 +130,7 @@ const scanWorkingRepository = async (rootPath: string): Promise<readonly NpmSecu
   for (const path of paths) {
     if (await Bun.file(join(rootPath, path)).exists()) existing.push(path);
   }
-  return scanGitSnapshot(existing, (path) => readFile(join(rootPath, path)));
+  return scanGitSnapshot(existing, (path) => Bun.file(join(rootPath, path)).bytes());
 };
 
 export const scanRepositoryHistory = async (rootPath: string): Promise<readonly NpmSecurityIssue[]> => {

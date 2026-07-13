@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { runGeneration, synchronizeProviderSchemas } from "../scripts/generate";
+import { runGeneration, synchronizeProviderArtifacts } from "../scripts/generate";
 
 const createFixture = async () => {
   const rootPath = await mkdtemp(join(tmpdir(), "provider-schema-command-"));
@@ -45,36 +45,40 @@ describe("schema snapshot synchronization", () => {
     const fixture = await createFixture();
 
     await expect(
-      synchronizeProviderSchemas({
-        ...fixture,
+      synchronizeProviderArtifacts({
+        rootPath: fixture.rootPath,
         check: true,
         sources: [fixture.source],
+        resolveSource: async () => join(fixture.rootPath, "node_modules", fixture.source.packageName),
       }),
-    ).rejects.toThrow("Provider schema snapshot is out of date");
+    ).rejects.toThrow("Provider artifacts are out of date");
 
     await expect(
-      synchronizeProviderSchemas({
-        ...fixture,
+      synchronizeProviderArtifacts({
+        rootPath: fixture.rootPath,
         sources: [fixture.source],
+        resolveSource: async () => join(fixture.rootPath, "node_modules", fixture.source.packageName),
       }),
     ).resolves.toEqual({ changed: true, count: 1 });
     const first = await readFile(fixture.targetPath, "utf8");
 
     await expect(
-      synchronizeProviderSchemas({
-        ...fixture,
+      synchronizeProviderArtifacts({
+        rootPath: fixture.rootPath,
         sources: [fixture.source],
+        resolveSource: async () => join(fixture.rootPath, "node_modules", fixture.source.packageName),
       }),
     ).resolves.toEqual({ changed: false, count: 1 });
     expect(await readFile(fixture.targetPath, "utf8")).toBe(first);
 
     await writeFile(fixture.targetPath, "stale");
     await expect(
-      synchronizeProviderSchemas({
-        ...fixture,
+      synchronizeProviderArtifacts({
+        rootPath: fixture.rootPath,
         check: true,
         sources: [fixture.source],
+        resolveSource: async () => join(fixture.rootPath, "node_modules", fixture.source.packageName),
       }),
-    ).rejects.toThrow("Provider schema snapshot is out of date");
+    ).rejects.toThrow("Provider artifacts are out of date");
   });
 });

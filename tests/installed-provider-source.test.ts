@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdir, mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { resolveInstalledProviderSource } from "../scripts/provider-schemas-generator";
+import { resolveInstalledProviderSource } from "../scripts/provider-artifacts";
 
 const roots: string[] = [];
 

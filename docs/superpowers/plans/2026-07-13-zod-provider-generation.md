@@ -14,7 +14,8 @@
 - Remove `@babel/parser`, TypeBox, the custom declaration graph, and unused parser outputs.
 - Never pass AST nodes between ts-morph's TypeScript instance and ts-to-zod's TypeScript 5 instance.
 - Unsupported optional properties are omitted with warnings; unsupported required properties make the Provider JSON schema unavailable.
-- `z.toJSONSchema()` uses `unrepresentable: "throw"`.
+- Plain JSDoc descriptions are exposed to `ts-to-zod` through its `@description` metadata tag.
+- `z.toJSONSchema()` uses input semantics, inline reused schemas, and `unrepresentable: "any"`; warned top-level optional properties are removed from JSON output.
 - The current 42-Provider JSON snapshot is the regression baseline.
 - `zod` is an exact devDependency and an optional compatible Zod 4 peer dependency.
 - Every commit appends `Co-authored-by: Codex <noreply@openai.com>` as a message footer.
@@ -172,7 +173,7 @@ const result = generate({
 if (result.errors.length) throw new Error(result.errors.join("\n"));
 ```
 
-Write the standalone declaration source to `src/provider-types.generated.ts` and call `result.getZodSchemasFile("./provider-types.generated.js")`. Render `src/zod-module.ts` with widened map typing. Import that module during generation with a cache-busting file URL, call `z.toJSONSchema(schema, { unrepresentable: "throw", cycles: "ref", reused: "ref" })`, attach package/factory/version/warnings metadata, sort recursively, and render `src/schema-module.ts`.
+Write the standalone declaration source to `src/provider-types.generated.ts`, copy plain JSDoc text into `@description` tags for `ts-to-zod`, and call `result.getZodSchemasFile("./provider-types.generated.js")`. Render `src/zod-module.ts` with widened map typing. Import that module during generation with a cache-busting file URL, call `z.toJSONSchema(schema, { unrepresentable: "any", io: "input", cycles: "ref", reused: "inline" })`, attach package/factory/version/warnings metadata, sort recursively, and render `src/schema-module.ts`.
 
 - [ ] **Step 4: Integrate both generated targets into check/write mode**
 

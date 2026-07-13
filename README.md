@@ -8,6 +8,17 @@ import { providerOptionsSchema } from "@aio-proxy/provider-schemas";
 const entry = providerOptionsSchema("@ai-sdk/openai");
 ```
 
+Executable Zod 4 schemas are available from the optional subpath:
+
+```ts
+import { providerOptionsZodSchema } from "@aio-proxy/provider-schemas/zod";
+
+const schema = providerOptionsZodSchema("@ai-sdk/openai");
+const result = schema?.safeParse({ apiKey: process.env.OPENAI_API_KEY });
+```
+
+Install a compatible Zod 4 version when using this subpath. The main JSON Schema entry does not import Zod.
+
 Provider package names and factory functions live in the build-only `providers.json` catalog. It is the only Provider list maintained by hand.
 
 To add a provider:
@@ -15,7 +26,7 @@ To add a provider:
 1. Add its package and factory names to `providers.json` in package-name order.
 2. Run `bun run generate`.
 
-Generation installs new Providers from npm at an exact version, removes deleted Providers, and synchronizes `package.json`, `bun.lock`, `.github/dependabot.yml`, and `src/schema-module.ts`. Existing versions are preserved and subsequently updated by Dependabot.
+Generation installs new Providers from npm at an exact version, removes deleted Providers, and synchronizes `package.json`, `bun.lock`, `.github/dependabot.yml`, `src/provider-types.generated.ts`, `src/zod-module.ts`, and `src/schema-module.ts`. Existing versions are preserved and subsequently updated by Dependabot.
 
 ## Registry security
 

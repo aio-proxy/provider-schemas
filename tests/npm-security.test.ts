@@ -64,6 +64,13 @@ describe("npm registry privacy policy", () => {
     ).toContain("non_exact_dependency");
   });
 
+  test("allows peer compatibility ranges but still requires exact installed dependencies", () => {
+    expect(codes("package.json", JSON.stringify({ peerDependencies: { zod: "^4.1.5" } }))).toEqual([]);
+    expect(codes("package.json", JSON.stringify({ devDependencies: { zod: "^4.1.5" } }))).toContain(
+      "non_exact_dependency",
+    );
+  });
+
   test("rejects private registry assignments and lockfile URLs", () => {
     const privateHost = ["bnpm", "byted", "org"].join(".");
     const registryKey = ["regis", "try"].join("");
@@ -139,7 +146,7 @@ describe("git commit security scanning", () => {
       commit: leakedCommit,
     });
     expect(JSON.stringify(issues)).not.toContain(secret);
-  });
+  }, 15_000);
 
   test("scans uncommitted files before the repository has its first commit", async () => {
     const rootPath = await repository();

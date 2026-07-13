@@ -97,7 +97,7 @@ Use `ts-to-zod` to convert the declaration source prepared by `ts-morph` into Zo
 
 `ts-to-zod` 5.x currently carries its own TypeScript 5 dependency while this repository compiles with TypeScript 6. Keep a source-text boundary between the tools: `ts-morph` emits a deterministic standalone TypeScript source, and `ts-to-zod` consumes that source. Never pass compiler AST nodes between their TypeScript instances. The full Provider catalog is the compatibility gate; if `ts-to-zod` cannot process that standalone source reliably, generate the equivalent Zod source directly from `ts-morph` rather than retaining two partial conversion paths.
 
-Generation writes a deterministic Zod module and evaluates the same generated schemas at build time with Zod 4's `z.toJSONSchema()` to produce the existing static JSON Schema snapshot. Zod conversion uses `unrepresentable: "throw"`; unsupported types must be handled explicitly before conversion rather than silently becoming `{}`.
+Generation writes a deterministic Zod module and evaluates the same generated schemas at build time with Zod 4's `z.toJSONSchema()` to produce the static JSON Schema snapshot. Plain JSDoc text is copied into `ts-to-zod`'s `@description` metadata so descriptions survive JSON conversion. Zod conversion uses input semantics, inline reused schemas, and `unrepresentable: "any"` because Zod can represent values such as `undefined` inside records that JSON Schema cannot. Top-level unsupported optional properties remain explicitly tracked by warnings and are removed from the JSON output; the executable Zod schema retains them as `unknown` optional properties.
 
 Keep only compatibility behavior exercised by the installed provider catalog and required by the public output contract:
 
