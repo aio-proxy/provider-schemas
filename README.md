@@ -26,7 +26,7 @@ To add a provider:
 1. Add its package and factory names to `providers.json` in package-name order.
 2. Run `bun run generate`.
 
-Generation installs new Providers from npm at an exact version, removes deleted Providers, and synchronizes `package.json`, `bun.lock`, `.github/dependabot.yml`, `src/provider-types.generated.ts`, `src/zod-module.ts`, and `src/schema-module.ts`. Existing versions are preserved and subsequently updated by Dependabot.
+Generation installs new Providers from npm at an exact version, removes deleted Providers, and synchronizes `package.json`, `bun.lock`, `.github/dependabot.yml`, `src/zod-module.ts`, and `src/schema-module.ts`. Existing versions are preserved and subsequently updated by Dependabot.
 
 ## Registry security
 

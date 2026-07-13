@@ -135,7 +135,6 @@ git commit -m "refactor: analyze provider declarations with ts-morph"
 - Create: `scripts/provider-schema-generator.ts`
 - Modify: `scripts/generate.ts`
 - Replace tests: `tests/schema-generator.test.ts`
-- Generate: `src/provider-types.generated.ts`
 - Generate: `src/zod-module.ts`
 - Generate: `src/schema-module.ts`
 
@@ -173,7 +172,7 @@ const result = generate({
 if (result.errors.length) throw new Error(result.errors.join("\n"));
 ```
 
-Write the standalone declaration source to `src/provider-types.generated.ts`, copy plain JSDoc text into `@description` tags for `ts-to-zod`, and call `result.getZodSchemasFile("./provider-types.generated.js")`. Render `src/zod-module.ts` with widened map typing. Import that module during generation with a cache-busting file URL, call `z.toJSONSchema(schema, { unrepresentable: "any", io: "input", cycles: "ref", reused: "inline" })`, attach package/factory/version/warnings metadata, sort recursively, and render `src/schema-module.ts`.
+Keep the standalone declaration source in memory, copy plain JSDoc text into `@description` tags for `ts-to-zod`, and render `src/zod-module.ts` with widened map typing. Import that module during generation with a cache-busting file URL, call `z.toJSONSchema(schema, { unrepresentable: "any", io: "input", cycles: "ref", reused: "inline" })`, attach package/factory/version/warnings metadata, sort recursively, and render `src/schema-module.ts`.
 
 - [ ] **Step 4: Integrate both generated targets into check/write mode**
 
@@ -194,7 +193,7 @@ Expected: tests pass. Review any JSON snapshot difference field-by-field; do not
 - [ ] **Step 6: Commit generated artifacts**
 
 ```bash
-git add scripts/provider-schema-generator.ts scripts/generate.ts tests/schema-generator.test.ts tests/generate-command.test.ts src/provider-types.generated.ts src/schema-module.ts src/zod-module.ts
+git add scripts/provider-schema-generator.ts scripts/generate.ts tests/schema-generator.test.ts tests/generate-command.test.ts src/schema-module.ts src/zod-module.ts
 git commit -m "feat: generate zod and json provider schemas"
 ```
 

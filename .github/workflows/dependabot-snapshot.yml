@@ -21,7 +21,7 @@ jobs:
         run: |
           unexpected="$(
             gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename' |
-              grep -Ev '^(package.json|bun.lock|src/provider-types\.generated\.ts|src/schema-module\.ts|src/zod-module\.ts)$' || true
+              grep -Ev '^(package.json|bun.lock|src/schema-module\.ts|src/zod-module\.ts)$' || true
           )"
           if [ -n "$unexpected" ]; then
             echo "Refusing to run privileged generation for unexpected files:"
@@ -48,11 +48,11 @@ jobs:
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          if git diff --quiet -- package.json bun.lock .github/dependabot.yml src/provider-types.generated.ts src/schema-module.ts src/zod-module.ts; then
+          if git diff --quiet -- package.json bun.lock .github/dependabot.yml src/schema-module.ts src/zod-module.ts; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json bun.lock .github/dependabot.yml src/provider-types.generated.ts src/schema-module.ts src/zod-module.ts
+          git add package.json bun.lock .github/dependabot.yml src/schema-module.ts src/zod-module.ts
           git commit -m "chore: regenerate provider schemas"
           git push origin "HEAD:$HEAD_REF"

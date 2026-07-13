@@ -40,7 +40,7 @@ describe("provider artifact generation", () => {
     });
 
     expect(artifacts.count).toBe(1);
-    expect(artifacts.typeSource).toContain("interface P0FixtureOptions");
+    expect(artifacts).not.toHaveProperty("typeSource");
     expect(artifacts.zodSource).toContain("PROVIDER_OPTIONS_ZOD_SCHEMAS");
     expect(artifacts.zodSource).toContain("P0ProviderOptionsSchema");
     expect(artifacts.jsonSource).toContain('"packageVersion": "1.0.0"');

@@ -1,6 +1,6 @@
 import { mkdtemp, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { Project, SyntaxKind } from "ts-morph";
 import { generate } from "ts-to-zod";
@@ -16,7 +16,6 @@ export type GenerateProviderArtifactsOptions = {
 };
 
 const compare = (left: string, right: string) => (left < right ? -1 : left > right ? 1 : 0);
-const npmPackageName = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/iu;
 
 const stringProperty = (value: unknown, key: string) => {
   if (typeof value !== "object" || value === null) return undefined;
@@ -26,9 +25,8 @@ const stringProperty = (value: unknown, key: string) => {
 
 const readProviderPackage = async (packageRoot: string) => {
   const value: unknown = await Bun.file(join(packageRoot, "package.json")).json();
-  const name = stringProperty(value, "name");
   const version = stringProperty(value, "version");
-  if (!name || !version) throw new Error("Provider package metadata requires name and version");
+  if (!version) throw new Error("Provider package metadata requires a version");
   const exportsValue =
     typeof value === "object" && value !== null ? (value as { exports?: unknown }).exports : undefined;
   const rootExport =
@@ -38,32 +36,14 @@ const readProviderPackage = async (packageRoot: string) => {
   const declarationEntry =
     stringProperty(rootExport, "types") ?? stringProperty(value, "types") ?? stringProperty(value, "typings");
   if (!declarationEntry) throw new Error("Provider package has no declaration entry");
-  return { name, version, declarationEntry };
+  return { version, declarationEntry };
 };
 
-const isInside = (root: string, candidate: string) => {
-  const path = relative(root, candidate);
-  return path !== ".." && !path.startsWith(`..${sep}`) && !isAbsolute(path);
-};
+const resolveInstalledProviderSource = (rootPath: string, source: ProviderSchemaSource) =>
+  realpath(join(rootPath, "node_modules", source.packageName));
 
-export const resolveInstalledProviderSource = async (rootPath: string, source: ProviderSchemaSource) => {
-  if (!npmPackageName.test(source.packageName)) throw new Error(`Invalid npm package name: ${source.packageName}`);
-  const packageRoot = await realpath(join(rootPath, "node_modules", source.packageName));
-  const metadata = await readProviderPackage(packageRoot);
-  if (metadata.name !== source.packageName) {
-    throw new Error(
-      `Installed provider package identity mismatch: expected ${source.packageName}, received ${metadata.name}`,
-    );
-  }
-  return packageRoot;
-};
-
-const resolveDeclarationEntry = async (packageRoot: string, declarationEntry: string) => {
-  const entry = await realpath(resolve(packageRoot, declarationEntry));
-  if (!isInside(packageRoot, entry)) throw new Error("Declaration entry is outside package root");
-  if (!/\.d\.[cm]?ts$/u.test(entry)) throw new Error("Declaration entry must be a declaration file");
-  return entry;
-};
+const resolveDeclarationEntry = (packageRoot: string, declarationEntry: string) =>
+  realpath(resolve(packageRoot, declarationEntry));
 
 const sortValue = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(sortValue);
@@ -127,7 +107,6 @@ export const generateProviderArtifacts = async ({
   resolveSource = resolveInstalledProviderSource,
 }: GenerateProviderArtifactsOptions) => {
   const sources = suppliedSources ?? (await readProviderSchemaCatalog(rootPath));
-  const typeSources: string[] = [];
   const schemaSources: string[] = [];
   const mapEntries: string[] = [];
   const metadata: Array<{
@@ -151,18 +130,11 @@ export const generateProviderArtifacts = async ({
       keepComments: true,
     });
     if (generated.errors.length > 0) throw new Error(generated.errors.join("\n"));
-    typeSources.push(namespaced.sourceText.trim());
-    schemaSources.push(schemaBody(generated.getZodSchemasFile("./provider-types.generated.js")));
+    schemaSources.push(schemaBody(generated.getZodSchemasFile("")));
     mapEntries.push(`  ${JSON.stringify(source.packageName)}: ${namespaced.rootSchemaName},`);
     metadata.push({ source, packageVersion: packageMetadata.version, warnings: extracted.warnings });
   }
 
-  const typeSource = [
-    "// biome-ignore-all format: This file is deterministically generated.",
-    "",
-    ...typeSources,
-    "",
-  ].join("\n\n");
   const zodSource = [
     "// biome-ignore-all format: This file is deterministically generated.",
     'import { z } from "zod";',
@@ -201,7 +173,6 @@ export const generateProviderArtifacts = async ({
   return {
     count: sources.length,
     entries,
-    typeSource,
     zodSource,
     jsonSource: renderJsonSource(entries),
   };

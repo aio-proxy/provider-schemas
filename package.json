@@ -36,7 +36,7 @@
     "prepublishOnly": "bun run ci",
     "test": "bun run test:unit",
     "test:package": "bun test tests/runtime-leakage.test.ts",
-    "test:unit": "bun test tests/public-api.test.ts tests/installed-provider-source.test.ts tests/provider-declaration.test.ts tests/provider-artifacts.test.ts tests/ts-to-zod-compatibility.test.ts tests/generate-command.test.ts tests/provider-catalog.test.ts tests/provider-sync.test.ts tests/npm-security.test.ts",
+    "test:unit": "bun test tests/public-api.test.ts tests/provider-declaration.test.ts tests/provider-artifacts.test.ts tests/ts-to-zod-compatibility.test.ts tests/generate-command.test.ts tests/provider-catalog.test.ts tests/provider-sync.test.ts tests/npm-security.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

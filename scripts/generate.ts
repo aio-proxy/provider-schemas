@@ -23,7 +23,6 @@ export const synchronizeProviderArtifacts = async ({
     ...(resolveSource === undefined ? {} : { resolveSource }),
   });
   const targets = [
-    [join(rootPath, "src/provider-types.generated.ts"), generated.typeSource],
     [join(rootPath, "src/zod-module.ts"), generated.zodSource],
     [join(rootPath, "src/schema-module.ts"), generated.jsonSource],
   ] as const;

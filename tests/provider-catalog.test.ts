@@ -86,14 +86,33 @@ describe("provider schema catalog", () => {
   });
 
   test("renders and reads one exact Dependabot allow list", () => {
-    const source = renderDependabot([
+    const catalog = [
       { packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" },
       { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
-    ]);
+    ] as const;
+    const source = renderDependabot(catalog);
 
-    expect(source).toContain('dependency-name: "@ai-sdk/anthropic"');
-    expect(source).toContain('dependency-name: "@ai-sdk/openai"');
-    expect(source).toContain('          - "*"');
+    expect(source).toBe(
+      Bun.YAML.stringify(
+        {
+          version: 2,
+          updates: [
+            {
+              "package-ecosystem": "npm",
+              directory: "/",
+              schedule: { interval: "daily", time: "09:00", timezone: "Asia/Shanghai" },
+              allow: catalog.map(({ packageName }) => ({ "dependency-name": packageName })),
+              groups: { "provider-sources": { patterns: ["*"] } },
+              "open-pull-requests-limit": 1,
+              "commit-message": { prefix: "fix", include: "scope" },
+            },
+          ],
+        },
+        null,
+        2,
+      ).replaceAll(": \n", ":\n"),
+    );
+    expect(source).not.toMatch(/ +$/mu);
     expect(readManagedProviderNames(source)).toEqual(["@ai-sdk/anthropic", "@ai-sdk/openai"]);
   });
 

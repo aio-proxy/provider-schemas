@@ -184,7 +184,7 @@ Document exactly:
 ```text
 1. Edit providers.json.
 2. Run bun run generate.
-3. Commit providers.json, package.json, bun.lock, .github/dependabot.yml, src/provider-types.generated.ts, src/schema-module.ts, and src/zod-module.ts when changed.
+3. Commit providers.json, package.json, bun.lock, .github/dependabot.yml, src/schema-module.ts, and src/zod-module.ts when changed.
 ```
 
 State that existing versions are preserved and new Providers resolve `latest` once before Dependabot takes over updates.

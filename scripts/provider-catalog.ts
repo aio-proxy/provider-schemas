@@ -46,28 +46,24 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
 };
 
 export const renderDependabot = (catalog: readonly ProviderSchemaSource[]) =>
-  [
-    "version: 2",
-    "",
-    "updates:",
-    "  - package-ecosystem: npm",
-    "    directory: /",
-    "    schedule:",
-    "      interval: daily",
-    '      time: "09:00"',
-    "      timezone: Asia/Shanghai",
-    "    allow:",
-    ...catalog.map(({ packageName }) => `      - dependency-name: "${packageName}"`),
-    "    groups:",
-    "      provider-sources:",
-    "        patterns:",
-    '          - "*"',
-    "    open-pull-requests-limit: 1",
-    "    commit-message:",
-    "      prefix: fix",
-    "      include: scope",
-    "",
-  ].join("\n");
+  Bun.YAML.stringify(
+    {
+      version: 2,
+      updates: [
+        {
+          "package-ecosystem": "npm",
+          directory: "/",
+          schedule: { interval: "daily", time: "09:00", timezone: "Asia/Shanghai" },
+          allow: catalog.map(({ packageName }) => ({ "dependency-name": packageName })),
+          groups: { "provider-sources": { patterns: ["*"] } },
+          "open-pull-requests-limit": 1,
+          "commit-message": { prefix: "fix", include: "scope" },
+        },
+      ],
+    },
+    null,
+    2,
+  ).replaceAll(": \n", ":\n");
 
 export const readManagedProviderNames = (text: string): readonly string[] => {
   const document = asRecord(Bun.YAML.parse(text), "dependabot.yml");
