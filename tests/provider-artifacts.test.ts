@@ -27,24 +27,25 @@ const fixture = async () => {
       export declare function createFixture(options?: FixtureOptions): unknown;
     `,
   );
+  await Bun.write(join(rootPath, "providers.json"), JSON.stringify([source]));
   return { rootPath, source, packageRoot };
 };
 
 describe("provider artifact generation", () => {
   test("generates executable Zod and static JSON schemas from one declaration", async () => {
     const fixtureData = await fixture();
-    const artifacts = await generateProviderArtifacts({
-      rootPath: fixtureData.rootPath,
-      sources: [fixtureData.source],
-      resolveSource: async () => fixtureData.packageRoot,
-    });
+    const artifacts = await generateProviderArtifacts(fixtureData.rootPath);
 
     expect(artifacts.count).toBe(1);
     expect(artifacts).not.toHaveProperty("typeSource");
     expect(artifacts.zodSource).toContain("PROVIDER_OPTIONS_ZOD_SCHEMAS");
     expect(artifacts.zodSource).toContain("P0ProviderOptionsSchema");
     expect(artifacts.jsonSource).toContain('"packageVersion": "1.0.0"');
-    expect(artifacts.entries[fixtureData.source.packageName]?.schema).toMatchObject({
+    expect(artifacts).not.toHaveProperty("entries");
+    const entries = JSON.parse(
+      artifacts.jsonSource.slice(artifacts.jsonSource.indexOf(" = ") + 3, artifacts.jsonSource.lastIndexOf(";")),
+    );
+    expect(entries[fixtureData.source.packageName]?.schema).toMatchObject({
       type: "object",
       description: "Fixture options.",
       properties: {
@@ -52,8 +53,8 @@ describe("provider artifact generation", () => {
         enabled: { type: "boolean", default: true },
       },
     });
-    expect(artifacts.entries[fixtureData.source.packageName]?.schema).not.toHaveProperty("required");
-    expect(artifacts.entries[fixtureData.source.packageName]?.warnings).toEqual([
+    expect(entries[fixtureData.source.packageName]?.schema).not.toHaveProperty("required");
+    expect(entries[fixtureData.source.packageName]?.warnings).toEqual([
       { code: "unsupported_optional", path: "fetch" },
     ]);
   });

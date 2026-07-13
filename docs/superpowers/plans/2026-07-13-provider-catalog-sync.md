@@ -4,7 +4,7 @@
 
 **Goal:** Make `providers.json` the only manually maintained Provider membership list and make `bun run generate` synchronize `package.json`, `bun.lock`, and `.github/dependabot.yml` before generating schemas.
 
-**Architecture:** Keep catalog parsing pure, derive a deterministic Dependabot document from it, and isolate Bun package-manager mutation behind one injected command runner. Normal generation applies add/remove operations; `--check` performs only comparisons and never invokes Bun or the network.
+**Architecture:** Keep catalog parsing pure, derive a deterministic Dependabot document from it, and run Bun package-manager mutations directly. Normal generation applies add/remove operations; `--check` performs only comparisons and never invokes Bun or the network.
 
 **Tech Stack:** Bun 1.3.14, TypeScript 6, Bun test, YAML through `Bun.YAML`.
 
@@ -127,39 +127,23 @@ git commit -m "refactor: derive provider configuration from catalog"
 
 **Interfaces:**
 - Consumes: catalog projection functions from Task 1.
-- Produces: `synchronizeProviderConfiguration(options): Promise<{ added: string[]; removed: string[]; changedDependabot: boolean }>`
-- Produces: `ProviderCommandRunner = (args: readonly string[]) => Promise<void>`
+- Produces: `synchronizeProviderConfiguration(rootPath, check?): Promise<void>`
 
-- [ ] **Step 1: Write failing synchronization tests with an injected runner**
+- [ ] **Step 1: Write synchronization tests against temporary repositories**
 
 ```ts
-test("adds missing providers, removes stale providers, and preserves versions", async () => {
-  const commands: string[][] = [];
-  const result = await synchronizeProviderConfiguration({
-    rootPath,
-    runBun: async (args) => commands.push([...args]),
-  });
-  expect(commands).toEqual([
-    ["remove", "@ai-sdk/anthropic"],
-    ["add", "--dev", "--exact", "--only-missing", "--registry=https://registry.npmjs.org", "@ai-sdk/xai@latest"],
-  ]);
-  expect(result).toEqual({
-    added: ["@ai-sdk/xai"],
-    removed: ["@ai-sdk/anthropic"],
-    changedDependabot: true,
-  });
+test("writes stale Dependabot configuration", async () => {
+  await expect(synchronizeProviderConfiguration(rootPath)).resolves.toBeUndefined();
 });
 
 test("check mode is read-only and reports drift", async () => {
-  let called = false;
-  await expect(
-    synchronizeProviderConfiguration({ rootPath, check: true, runBun: async () => { called = true; } }),
-  ).rejects.toThrow("Provider configuration is out of date; run `bun run generate`");
-  expect(called).toBe(false);
+  await expect(synchronizeProviderConfiguration(rootPath, true)).rejects.toThrow(
+    "Provider configuration is out of date; run `bun run generate`",
+  );
 });
 ```
 
-The fixture runner does not mutate files; assertions cover command construction and Dependabot rendering independently. Add a no-op fixture proving an existing exact Provider version is preserved.
+Use the pure dependency planner to test add/remove decisions. Add a no-op fixture proving an existing exact Provider version is preserved.
 
 - [ ] **Step 2: Run the new test and confirm failure**
 
@@ -169,21 +153,7 @@ Expected: FAIL because `scripts/provider-sync.ts` does not exist.
 
 - [ ] **Step 3: Implement the minimal synchronizer**
 
-```ts
-export type ProviderCommandRunner = (args: readonly string[]) => Promise<void>;
-
-const runBun = options.runBun ?? (async (args: readonly string[]) => {
-  const process = Bun.spawn([process.execPath, ...args], {
-    cwd: options.rootPath,
-    stdout: "inherit",
-    stderr: "pipe",
-  });
-  const stderr = await new Response(process.stderr).text();
-  if ((await process.exited) !== 0) throw new Error(`bun ${args[0]} failed: ${stderr.trim()}`);
-});
-```
-
-Read files with `Bun.file()`, call `bun remove <name>` once per sorted removal, call `bun add --dev --exact --only-missing --registry=https://registry.npmjs.org <name>@latest` once per sorted addition, and write Dependabot with `Bun.write()` only when content differs. In `check` mode, calculate all drift and throw before invoking the runner or writing.
+Read files with `Bun.file()`, call `bun remove <name>` once per sorted removal, call `bun add --dev --exact --only-missing --registry=https://registry.npmjs.org <name>@latest` once per sorted addition, and write Dependabot with `Bun.write()` only when content differs. In `check` mode, calculate all drift and throw before invoking Bun or writing.
 
 - [ ] **Step 4: Run synchronization and catalog tests**
 
@@ -226,7 +196,7 @@ test("the generation command synchronizes configuration before schemas", async (
 });
 ```
 
-Expose only the small `runGeneration` orchestration seam needed by this test.
+Test generation against a temporary repository instead of exposing orchestration seams.
 
 - [ ] **Step 2: Run the focused command test and confirm failure**
 
@@ -237,13 +207,9 @@ Expected: FAIL because `runGeneration` and configuration synchronization are abs
 - [ ] **Step 3: Integrate the pipeline**
 
 ```ts
-export const runGeneration = async ({ rootPath, check = false }: RunGenerationOptions) => {
-  await synchronizeProviderConfiguration({ rootPath, check });
-  return synchronizeProviderSchemas({
-    rootPath,
-    targetPath: join(rootPath, "src/schema-module.ts"),
-    check,
-  });
+export const runGeneration = async (rootPath: string, check = false) => {
+  await synchronizeProviderConfiguration(rootPath, check);
+  return synchronizeProviderSchemas(rootPath, check);
 };
 ```
 

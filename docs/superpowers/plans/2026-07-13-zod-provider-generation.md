@@ -80,7 +80,7 @@ git commit -m "test: verify ts-to-zod generation boundary"
 - Replace tests: `tests/declaration-parser.test.ts`
 
 **Interfaces:**
-- Produces: `extractProviderDeclaration(options): Promise<{ sourceText: string; rootTypeName: string; warnings: ProviderOptionsSchemaWarning[] }>`
+- Produces: `extractProviderDeclaration(options): Promise<{ sourceText: string; warnings: ProviderOptionsSchemaWarning[] }>`
 - Consumes: `{ packageRoot, declarationEntry, factoryName }`.
 
 - [ ] **Step 1: Rewrite tests around production outputs only**
@@ -89,7 +89,6 @@ Keep fixtures for direct exports, named re-exports, export stars, imported alias
 
 ```ts
 const result = await extractProviderDeclaration({ packageRoot: root, declarationEntry: entry, factoryName: "createFixture" });
-expect(result.rootTypeName).toBe("FixtureOptions");
 expect(result.sourceText).toContain("export interface FixtureOptions");
 expect(result.sourceText).toContain("export interface SharedOptions");
 expect(result.warnings).toContainEqual({ code: "unsupported_optional", path: "fetch" });
@@ -140,12 +139,12 @@ git commit -m "refactor: analyze provider declarations with ts-morph"
 
 **Interfaces:**
 - Consumes: `extractProviderDeclaration()` from Task 2.
-- Produces: `generateProviderArtifacts(options): Promise<{ jsonSource: string; zodSource: string; count: number }>`
+- Produces: `generateProviderArtifacts(rootPath): Promise<{ jsonSource: string; zodSource: string; count: number }>`
 
 - [ ] **Step 1: Write failing artifact tests**
 
 ```ts
-const artifacts = await generateProviderArtifacts({ rootPath, sources: [source], resolveSource });
+const artifacts = await generateProviderArtifacts(rootPath);
 expect(artifacts.zodSource).toContain('import * as z from "zod"');
 expect(artifacts.zodSource).toContain("PROVIDER_OPTIONS_ZOD_SCHEMAS");
 expect(artifacts.jsonSource).toContain('"packageVersion": "1.0.0"');
@@ -165,7 +164,6 @@ Expected: FAIL because the new generator does not exist.
 ```ts
 const result = generate({
   sourceText: declaration.sourceText,
-  nameFilter: (name) => name === declaration.rootTypeName || referencedNames.has(name),
   getSchemaName: (name) => `${name}Schema`,
   keepComments: true,
 });

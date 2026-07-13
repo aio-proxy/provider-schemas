@@ -9,12 +9,6 @@ import type { ProviderOptionsSchemaEntry } from "../src/types";
 import { type ProviderSchemaSource, readProviderSchemaCatalog } from "./provider-catalog";
 import { extractProviderDeclaration } from "./provider-declaration";
 
-export type GenerateProviderArtifactsOptions = {
-  readonly rootPath: string;
-  readonly sources?: readonly ProviderSchemaSource[];
-  readonly resolveSource?: (rootPath: string, source: ProviderSchemaSource) => Promise<string>;
-};
-
 const compare = (left: string, right: string) => (left < right ? -1 : left > right ? 1 : 0);
 
 const stringProperty = (value: unknown, key: string) => {
@@ -101,12 +95,8 @@ const renderJsonSource = (entries: Readonly<Record<string, ProviderOptionsSchema
     "",
   ].join("\n");
 
-export const generateProviderArtifacts = async ({
-  rootPath,
-  sources: suppliedSources,
-  resolveSource = resolveInstalledProviderSource,
-}: GenerateProviderArtifactsOptions) => {
-  const sources = suppliedSources ?? (await readProviderSchemaCatalog(rootPath));
+export const generateProviderArtifacts = async (rootPath: string) => {
+  const sources = await readProviderSchemaCatalog(rootPath);
   const schemaSources: string[] = [];
   const mapEntries: string[] = [];
   const metadata: Array<{
@@ -116,7 +106,7 @@ export const generateProviderArtifacts = async ({
   }> = [];
 
   for (const [index, source] of sources.entries()) {
-    const packageRoot = await realpath(await resolveSource(rootPath, source));
+    const packageRoot = await realpath(await resolveInstalledProviderSource(rootPath, source));
     const packageMetadata = await readProviderPackage(packageRoot);
     const extracted = await extractProviderDeclaration({
       packageRoot,
@@ -172,7 +162,6 @@ export const generateProviderArtifacts = async ({
 
   return {
     count: sources.length,
-    entries,
     zodSource,
     jsonSource: renderJsonSource(entries),
   };

@@ -21,7 +21,6 @@ export type ExtractProviderDeclarationOptions = {
 
 export type ExtractedProviderDeclaration = {
   readonly sourceText: string;
-  readonly rootTypeName: "ProviderOptions";
   readonly warnings: readonly ProviderOptionsSchemaWarning[];
 };
 
@@ -191,7 +190,6 @@ export const extractProviderDeclaration = async ({
     .map((declaration) => declaration.getFullText().trim());
   const rootDocumentation = rootDeclaration?.getJsDocs().at(-1)?.getFullText().trim();
   return {
-    rootTypeName: "ProviderOptions",
     sourceText: [
       ...declarations,
       ...aliases,

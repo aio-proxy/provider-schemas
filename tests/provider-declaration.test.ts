@@ -33,7 +33,7 @@ describe("provider declaration extraction", () => {
       factoryName: "createFixture",
     });
 
-    expect(result.rootTypeName).toBe("ProviderOptions");
+    expect(result).not.toHaveProperty("rootTypeName");
     expect(result.sourceText).toContain("interface FixtureOptions");
     expect(result.sourceText).toContain("interface SharedOptions");
     expect(result.sourceText).toContain("export type ProviderOptions = FixtureOptions");

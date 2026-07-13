@@ -18,41 +18,23 @@ const fixture = async ({ stale = true } = {}) => {
   await Bun.write(
     join(rootPath, "package.json"),
     JSON.stringify({
-      devDependencies: { "@ai-sdk/openai": "4.0.11", typescript: "6.0.3" },
+      devDependencies: { "@ai-sdk/openai": "4.0.11", "@ai-sdk/xai": "4.0.10", typescript: "6.0.3" },
     }),
   );
-  await Bun.write(
-    join(rootPath, ".github/dependabot.yml"),
-    stale
-      ? renderDependabot([
-          { packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" },
-          { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
-        ])
-      : renderDependabot([
-          { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
-          { packageName: "@ai-sdk/xai", factoryName: "createXai" },
-        ]),
-  );
+  const catalog = [
+    { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
+    { packageName: "@ai-sdk/xai", factoryName: "createXai" },
+  ] as const;
+  await Bun.write(join(rootPath, ".github/dependabot.yml"), `${renderDependabot(catalog)}${stale ? "\n" : ""}`);
   return rootPath;
 };
 
 describe("provider configuration synchronization", () => {
-  test("adds missing providers, removes stale providers, and renders Dependabot", async () => {
+  test("renders stale Dependabot configuration", async () => {
     const rootPath = await fixture();
-    const commands: string[][] = [];
+    const result = await synchronizeProviderConfiguration(rootPath);
 
-    const result = await synchronizeProviderConfiguration({
-      rootPath,
-      runBun: async (args) => {
-        commands.push([...args]);
-      },
-    });
-
-    expect(commands).toEqual([
-      ["remove", "@ai-sdk/anthropic"],
-      ["add", "--dev", "--exact", "--only-missing", "--registry=https://registry.npmjs.org", "@ai-sdk/xai@latest"],
-    ]);
-    expect(result).toEqual({ added: ["@ai-sdk/xai"], removed: ["@ai-sdk/anthropic"], changedDependabot: true });
+    expect(result).toBeUndefined();
     expect(await Bun.file(join(rootPath, ".github/dependabot.yml")).text()).toBe(
       renderDependabot([
         { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
@@ -61,22 +43,14 @@ describe("provider configuration synchronization", () => {
     );
   });
 
-  test("check mode reports drift without invoking Bun or writing", async () => {
+  test("check mode reports drift without writing", async () => {
     const rootPath = await fixture();
     const before = await Bun.file(join(rootPath, ".github/dependabot.yml")).text();
-    let called = false;
 
-    await expect(
-      synchronizeProviderConfiguration({
-        rootPath,
-        check: true,
-        runBun: async () => {
-          called = true;
-        },
-      }),
-    ).rejects.toThrow("Provider configuration is out of date; run `bun run generate`");
+    await expect(synchronizeProviderConfiguration(rootPath, true)).rejects.toThrow(
+      "Provider configuration is out of date; run `bun run generate`",
+    );
 
-    expect(called).toBe(false);
     expect(await Bun.file(join(rootPath, ".github/dependabot.yml")).text()).toBe(before);
   });
 
@@ -89,17 +63,7 @@ describe("provider configuration synchronization", () => {
         devDependencies: { "@ai-sdk/openai": "4.0.11", "@ai-sdk/xai": "4.0.10", typescript: "6.0.3" },
       }),
     );
-    const commands: string[][] = [];
-
-    await expect(
-      synchronizeProviderConfiguration({
-        rootPath,
-        runBun: async (args) => {
-          commands.push([...args]);
-        },
-      }),
-    ).resolves.toEqual({ added: [], removed: [], changedDependabot: false });
-    expect(commands).toEqual([]);
+    await expect(synchronizeProviderConfiguration(rootPath)).resolves.toBeUndefined();
     expect(await Bun.file(packagePath).json()).toEqual({
       devDependencies: { "@ai-sdk/openai": "4.0.11", "@ai-sdk/xai": "4.0.10", typescript: "6.0.3" },
     });
@@ -114,7 +78,7 @@ describe("provider configuration synchronization", () => {
       }),
     );
 
-    await expect(synchronizeProviderConfiguration({ rootPath })).rejects.toThrow(
+    await expect(synchronizeProviderConfiguration(rootPath)).rejects.toThrow(
       "Provider dependencies must use exact versions",
     );
   });

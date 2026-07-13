@@ -7,22 +7,10 @@ import {
   renderDependabot,
 } from "./provider-catalog";
 
-export type ProviderCommandRunner = (args: readonly string[]) => Promise<void>;
-
-export type SynchronizeProviderConfigurationOptions = {
-  readonly rootPath: string;
-  readonly check?: boolean;
-  readonly runBun?: ProviderCommandRunner;
-};
-
 const record = (value: unknown): Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 
-export const synchronizeProviderConfiguration = async ({
-  rootPath,
-  check = false,
-  runBun: injectedRunner,
-}: SynchronizeProviderConfigurationOptions) => {
+export const synchronizeProviderConfiguration = async (rootPath: string, check = false) => {
   const catalog = await readProviderSchemaCatalog(rootPath);
   const packageJson = record(await Bun.file(join(rootPath, "package.json")).json());
   const devDependencies = record(packageJson["devDependencies"]) as Record<string, string>;
@@ -47,13 +35,11 @@ export const synchronizeProviderConfiguration = async ({
     throw new Error("Provider configuration is out of date; run `bun run generate`");
   }
 
-  const runBun =
-    injectedRunner ??
-    (async (args: readonly string[]) => {
-      const child = Bun.spawn([process.execPath, ...args], { cwd: rootPath, stdout: "inherit", stderr: "pipe" });
-      const stderr = await new Response(child.stderr).text();
-      if ((await child.exited) !== 0) throw new Error(`bun ${args[0] ?? "command"} failed: ${stderr.trim()}`);
-    });
+  const runBun = async (args: readonly string[]) => {
+    const child = Bun.spawn([process.execPath, ...args], { cwd: rootPath, stdout: "inherit", stderr: "pipe" });
+    const stderr = await new Response(child.stderr).text();
+    if ((await child.exited) !== 0) throw new Error(`bun ${args[0] ?? "command"} failed: ${stderr.trim()}`);
+  };
 
   for (const name of changes.remove) await runBun(["remove", name]);
   for (const name of changes.add) {
@@ -67,6 +53,4 @@ export const synchronizeProviderConfiguration = async ({
     ]);
   }
   if (changedDependabot) await Bun.write(dependabotPath, desiredDependabot);
-
-  return { added: changes.add, removed: changes.remove, changedDependabot };
 };
