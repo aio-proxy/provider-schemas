@@ -2,7 +2,12 @@ import { describe, expect, test } from "bun:test";
 import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readProviderSchemaCatalog, validateProviderSchemaCatalog } from "../scripts/provider-catalog";
+import {
+  planProviderDependencyChanges,
+  readManagedProviderNames,
+  readProviderSchemaCatalog,
+  renderDependabot,
+} from "../scripts/provider-catalog";
 
 const writeFixture = async ({
   providers = [
@@ -48,14 +53,13 @@ const writeFixture = async ({
 };
 
 describe("provider schema catalog", () => {
-  test("reads and validates provider sources against dependencies and Dependabot policy", async () => {
+  test("reads provider sources", async () => {
     const rootPath = await writeFixture();
 
     await expect(readProviderSchemaCatalog(rootPath)).resolves.toEqual([
       { packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" },
       { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
     ]);
-    await expect(validateProviderSchemaCatalog(rootPath)).resolves.toBeUndefined();
   });
 
   test("rejects duplicate and unsorted provider entries", async () => {
@@ -81,46 +85,24 @@ describe("provider schema catalog", () => {
     );
   });
 
-  test("rejects missing and non-exact provider development dependencies", async () => {
-    const missingRoot = await writeFixture({
-      devDependencies: { "@ai-sdk/anthropic": "4.0.12" },
-    });
-    await expect(validateProviderSchemaCatalog(missingRoot)).rejects.toThrow(
-      "Catalog provider is not a devDependency: @ai-sdk/openai",
-    );
+  test("renders and reads one exact Dependabot allow list", () => {
+    const source = renderDependabot([
+      { packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" },
+      { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
+    ]);
 
-    const rangeRoot = await writeFixture({
-      devDependencies: {
-        "@ai-sdk/anthropic": "4.0.12",
-        "@ai-sdk/openai": "^4.0.11",
-      },
-    });
-    await expect(validateProviderSchemaCatalog(rangeRoot)).rejects.toThrow(
-      "Catalog provider must use an exact version: @ai-sdk/openai",
-    );
-
-    const runtimeRoot = await writeFixture({ dependencies: { "@ai-sdk/openai": "4.0.11" } });
-    await expect(validateProviderSchemaCatalog(runtimeRoot)).rejects.toThrow(
-      "Catalog provider must only be a devDependency: @ai-sdk/openai",
-    );
+    expect(source).toContain('dependency-name: "@ai-sdk/anthropic"');
+    expect(source).toContain('dependency-name: "@ai-sdk/openai"');
+    expect(source).toContain('          - "*"');
+    expect(readManagedProviderNames(source)).toEqual(["@ai-sdk/anthropic", "@ai-sdk/openai"]);
   });
 
-  test("rejects drift between the catalog and Dependabot provider selection", async () => {
-    const missingCatalogRoot = await writeFixture({
-      providers: [{ packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" }],
-    });
-    await expect(validateProviderSchemaCatalog(missingCatalogRoot)).rejects.toThrow(
-      "Dependabot provider dependency is missing from providers.json: @ai-sdk/openai",
-    );
-
-    const allowRoot = await writeFixture({ allow: ["@ai-sdk/anthropic"] });
-    await expect(validateProviderSchemaCatalog(allowRoot)).rejects.toThrow(
-      "Dependabot allow rules do not cover catalog provider: @ai-sdk/openai",
-    );
-
-    const groupRoot = await writeFixture({ group: ["@ai-sdk/anthropic"] });
-    await expect(validateProviderSchemaCatalog(groupRoot)).rejects.toThrow(
-      "Dependabot provider-sources group does not cover catalog provider: @ai-sdk/openai",
-    );
+  test("plans provider changes without touching tools", () => {
+    expect(
+      planProviderDependencyChanges(["@ai-sdk/openai", "@ai-sdk/xai"], ["@ai-sdk/anthropic", "@ai-sdk/openai"], {
+        "@ai-sdk/openai": "4.0.11",
+        typescript: "6.0.3",
+      }),
+    ).toEqual({ add: ["@ai-sdk/xai"], remove: ["@ai-sdk/anthropic"] });
   });
 });

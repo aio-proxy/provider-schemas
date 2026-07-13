@@ -4,6 +4,7 @@ import {
   type ProviderSchemaSource,
   renderGeneratedProviderSchemas,
 } from "./provider-schemas-generator";
+import { synchronizeProviderConfiguration } from "./provider-sync";
 
 export type SynchronizeProviderSchemasOptions = {
   readonly rootPath: string;
@@ -36,12 +37,25 @@ export const synchronizeProviderSchemas = async ({
   return { changed: true, count };
 };
 
+export type RunGenerationOptions = {
+  readonly rootPath: string;
+  readonly check?: boolean;
+  readonly synchronizeConfiguration?: typeof synchronizeProviderConfiguration;
+  readonly synchronizeSchemas?: typeof synchronizeProviderSchemas;
+};
+
+export const runGeneration = async ({
+  rootPath,
+  check = false,
+  synchronizeConfiguration = synchronizeProviderConfiguration,
+  synchronizeSchemas = synchronizeProviderSchemas,
+}: RunGenerationOptions) => {
+  await synchronizeConfiguration({ rootPath, check });
+  return synchronizeSchemas({ rootPath, targetPath: join(rootPath, "src/schema-module.ts"), check });
+};
+
 if (import.meta.main) {
   const rootPath = join(import.meta.dir, "..");
-  const result = await synchronizeProviderSchemas({
-    rootPath,
-    targetPath: join(rootPath, "src/schema-module.ts"),
-    check: process.argv.includes("--check"),
-  });
+  const result = await runGeneration({ rootPath, check: process.argv.includes("--check") });
   console.log(`provider schemas: ${result.count} generated${result.changed ? " (updated)" : ""}`);
 }

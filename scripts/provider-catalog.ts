@@ -5,14 +5,13 @@ export type ProviderSchemaSource = {
   readonly factoryName: string;
 };
 
-const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
+export const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
 const factoryName = /^[$A-Z_a-z][$\w]*$/u;
 const npmPackageName = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/u;
 
 const asRecord = (value: unknown, label: string): Readonly<Record<string, unknown>> => {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+  if (typeof value !== "object" || value === null || Array.isArray(value))
     throw new Error(`${label} must be an object`);
-  }
   return value as Readonly<Record<string, unknown>>;
 };
 
@@ -22,13 +21,15 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
 
   const sources = value.map((item, index): ProviderSchemaSource => {
     const entry = asRecord(item, `providers.json entry ${index}`);
-    if (typeof entry["packageName"] !== "string" || !npmPackageName.test(entry["packageName"])) {
+    const packageName = entry["packageName"];
+    const providerFactoryName = entry["factoryName"];
+    if (typeof packageName !== "string" || !npmPackageName.test(packageName)) {
       throw new Error(`Invalid provider packageName at index ${index}`);
     }
-    if (typeof entry["factoryName"] !== "string" || !factoryName.test(entry["factoryName"])) {
-      throw new Error(`Invalid provider factoryName for ${entry["packageName"]}`);
+    if (typeof providerFactoryName !== "string" || !factoryName.test(providerFactoryName)) {
+      throw new Error(`Invalid provider factoryName for ${packageName}`);
     }
-    return { packageName: entry["packageName"], factoryName: entry["factoryName"] };
+    return { packageName, factoryName: providerFactoryName };
   });
 
   const seen = new Set<string>();
@@ -44,77 +45,48 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
   return sources;
 };
 
-const dependencyPatterns = (value: unknown, label: string): readonly string[] => {
-  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
-    throw new Error(`${label} must be an array of dependency patterns`);
-  }
-  return value as readonly string[];
-};
+export const renderDependabot = (catalog: readonly ProviderSchemaSource[]) =>
+  [
+    "version: 2",
+    "",
+    "updates:",
+    "  - package-ecosystem: npm",
+    "    directory: /",
+    "    schedule:",
+    "      interval: daily",
+    '      time: "09:00"',
+    "      timezone: Asia/Shanghai",
+    "    allow:",
+    ...catalog.map(({ packageName }) => `      - dependency-name: "${packageName}"`),
+    "    groups:",
+    "      provider-sources:",
+    "        patterns:",
+    '          - "*"',
+    "    open-pull-requests-limit: 1",
+    "    commit-message:",
+    "      prefix: fix",
+    "      include: scope",
+    "",
+  ].join("\n");
 
-const wildcardPattern = (pattern: string) =>
-  new RegExp(`^${pattern.replace(/[|\\{}()[\]^$+?.]/gu, "\\$&").replaceAll("*", ".*")}$`, "u");
-
-const matchesAny = (name: string, patterns: readonly string[]) =>
-  patterns.some((pattern) => wildcardPattern(pattern).test(name));
-
-export const validateProviderSchemaCatalog = async (rootPath: string): Promise<void> => {
-  const sources = await readProviderSchemaCatalog(rootPath);
-  const packageJson = asRecord(await Bun.file(join(rootPath, "package.json")).json(), "package.json");
-  const devDependencies = asRecord(packageJson["devDependencies"] ?? {}, "package.json devDependencies");
-  const nonDevelopmentDependencies = ["dependencies", "optionalDependencies", "peerDependencies"].map((section) =>
-    asRecord(packageJson[section] ?? {}, `package.json ${section}`),
-  );
-  for (const source of sources) {
-    const version = devDependencies[source.packageName];
-    if (version === undefined) throw new Error(`Catalog provider is not a devDependency: ${source.packageName}`);
-    if (typeof version !== "string" || !exactVersion.test(version)) {
-      throw new Error(`Catalog provider must use an exact version: ${source.packageName}`);
-    }
-    if (nonDevelopmentDependencies.some((dependencies) => dependencies[source.packageName] !== undefined)) {
-      throw new Error(`Catalog provider must only be a devDependency: ${source.packageName}`);
-    }
-  }
-
-  const dependabotText = await Bun.file(join(rootPath, ".github/dependabot.yml")).text();
-  const dependabot = asRecord(Bun.YAML.parse(dependabotText), "dependabot.yml");
-  if (!Array.isArray(dependabot["updates"])) throw new Error("dependabot.yml updates must be an array");
-  const npmUpdate = dependabot["updates"]
+export const readManagedProviderNames = (text: string): readonly string[] => {
+  const document = asRecord(Bun.YAML.parse(text), "dependabot.yml");
+  if (!Array.isArray(document["updates"])) return [];
+  const npmUpdate = document["updates"]
     .map((value, index) => asRecord(value, `dependabot.yml update ${index}`))
     .find((update) => update["package-ecosystem"] === "npm" && update["directory"] === "/");
-  if (npmUpdate === undefined) throw new Error("dependabot.yml must configure npm updates for /");
-
-  if (!Array.isArray(npmUpdate["allow"])) throw new Error("Dependabot npm allow rules must be an array");
-  const allowPatterns = npmUpdate["allow"].map((value, index) => {
-    const rule = asRecord(value, `Dependabot allow rule ${index}`);
-    if (typeof rule["dependency-name"] !== "string") {
-      throw new Error(`Dependabot allow rule ${index} must have dependency-name`);
-    }
-    return rule["dependency-name"];
-  });
-  const groups = asRecord(npmUpdate["groups"], "Dependabot npm groups");
-  const providerGroup = asRecord(groups["provider-sources"], "Dependabot provider-sources group");
-  const groupPatterns = dependencyPatterns(providerGroup["patterns"], "Dependabot provider-sources patterns");
-
-  for (const source of sources) {
-    if (!matchesAny(source.packageName, allowPatterns)) {
-      throw new Error(`Dependabot allow rules do not cover catalog provider: ${source.packageName}`);
-    }
-    if (!matchesAny(source.packageName, groupPatterns)) {
-      throw new Error(`Dependabot provider-sources group does not cover catalog provider: ${source.packageName}`);
-    }
-  }
-
-  const catalogPackages = new Set(sources.map((source) => source.packageName));
-  for (const name of Object.keys(devDependencies)) {
-    if (matchesAny(name, allowPatterns) && !catalogPackages.has(name)) {
-      throw new Error(`Dependabot provider dependency is missing from providers.json: ${name}`);
-    }
-  }
+  if (!npmUpdate || !Array.isArray(npmUpdate["allow"])) return [];
+  return npmUpdate["allow"]
+    .map((value, index) => asRecord(value, `Dependabot allow rule ${index}`)["dependency-name"])
+    .filter((name): name is string => typeof name === "string" && !name.includes("*"))
+    .sort();
 };
 
-if (import.meta.main) {
-  const rootPath = join(import.meta.dir, "..");
-  await validateProviderSchemaCatalog(rootPath);
-  const sources = await readProviderSchemaCatalog(rootPath);
-  console.log(`provider catalog: ${sources.length} entries valid`);
-}
+export const planProviderDependencyChanges = (
+  catalogNames: readonly string[],
+  previousNames: readonly string[],
+  devDependencies: Readonly<Record<string, string>>,
+) => ({
+  add: catalogNames.filter((name) => devDependencies[name] === undefined),
+  remove: previousNames.filter((name) => !catalogNames.includes(name)),
+});

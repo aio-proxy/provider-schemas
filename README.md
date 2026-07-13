@@ -8,15 +8,14 @@ import { providerOptionsSchema } from "@aio-proxy/provider-schemas";
 const entry = providerOptionsSchema("@ai-sdk/openai");
 ```
 
-Provider packages are exact-version development dependencies. Their package names and factory functions live in the build-only `providers.json` catalog. `bun run check:catalog` verifies that the catalog, `devDependencies`, and Dependabot provider rules agree.
+Provider package names and factory functions live in the build-only `providers.json` catalog. It is the only Provider list maintained by hand.
 
 To add a provider:
 
-1. Add it to `devDependencies` with an exact version.
-2. Add its package and factory names to `providers.json` in package-name order.
-3. Run `bun run check:catalog` and `bun run generate`.
+1. Add its package and factory names to `providers.json` in package-name order.
+2. Run `bun run generate`.
 
-Dependabot updates provider versions in `package.json` and `bun.lock`; the snapshot workflow regenerates `src/schema-module.ts`. The catalog contains no versions, so there is no reverse synchronization step.
+Generation installs new Providers from npm at an exact version, removes deleted Providers, and synchronizes `package.json`, `bun.lock`, `.github/dependabot.yml`, and `src/schema-module.ts`. Existing versions are preserved and subsequently updated by Dependabot.
 
 ## Registry security
 

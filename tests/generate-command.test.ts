@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { synchronizeProviderSchemas } from "../scripts/generate";
+import { runGeneration, synchronizeProviderSchemas } from "../scripts/generate";
 
 const createFixture = async () => {
   const rootPath = await mkdtemp(join(tmpdir(), "provider-schema-command-"));
@@ -23,6 +23,24 @@ const createFixture = async () => {
 };
 
 describe("schema snapshot synchronization", () => {
+  test("synchronizes configuration before schemas", async () => {
+    const calls: string[] = [];
+
+    await runGeneration({
+      rootPath: "/fixture",
+      synchronizeConfiguration: async () => {
+        calls.push("configuration");
+        return { added: [], removed: [], changedDependabot: false };
+      },
+      synchronizeSchemas: async () => {
+        calls.push("schemas");
+        return { changed: false, count: 1 };
+      },
+    });
+
+    expect(calls).toEqual(["configuration", "schemas"]);
+  });
+
   test("writes once, stays stable, and fails check mode for stale output", async () => {
     const fixture = await createFixture();
 
