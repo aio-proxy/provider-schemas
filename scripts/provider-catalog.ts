@@ -4,6 +4,9 @@ export type ProviderSchemaSource = {
   readonly packageName: string;
   readonly subpath?: string;
   readonly factoryName: string;
+  readonly overrides?: {
+    readonly optional: readonly string[];
+  };
 };
 
 export const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
@@ -32,6 +35,7 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
     const packageName = entry["packageName"];
     const subpath = entry["subpath"];
     const providerFactoryName = entry["factoryName"];
+    const overridesValue = entry["overrides"];
     if (typeof packageName !== "string" || !npmPackageName.test(packageName)) {
       throw new Error(`Invalid provider packageName at index ${index}`);
     }
@@ -41,7 +45,18 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
     if (subpath !== undefined && (typeof subpath !== "string" || subpath.length === 0)) {
       throw new Error(`Invalid provider subpath for ${packageName}`);
     }
-    return { packageName, ...(subpath === undefined ? {} : { subpath }), factoryName: providerFactoryName };
+    const overrides =
+      overridesValue === undefined ? undefined : asRecord(overridesValue, `overrides for ${packageName}`);
+    const optional = overrides?.["optional"];
+    if (optional !== undefined && (!Array.isArray(optional) || optional.some((name) => typeof name !== "string"))) {
+      throw new Error(`Invalid optional overrides for ${packageName}`);
+    }
+    return {
+      packageName,
+      ...(subpath === undefined ? {} : { subpath }),
+      factoryName: providerFactoryName,
+      ...(optional === undefined ? {} : { overrides: { optional: optional as string[] } }),
+    };
   });
 
   const seen = new Set<string>();

@@ -57,13 +57,23 @@ describe("provider schema catalog", () => {
     const rootPath = await writeFixture({
       providers: [
         { packageName: "@ai-sdk/google-vertex", factoryName: "createGoogleVertex" },
-        { packageName: "@ai-sdk/google-vertex", subpath: "anthropic", factoryName: "createVertexAnthropic" },
+        {
+          packageName: "@ai-sdk/google-vertex",
+          subpath: "anthropic",
+          factoryName: "createVertexAnthropic",
+          overrides: { optional: ["project"] },
+        },
       ],
     });
 
     await expect(readProviderSchemaCatalog(rootPath)).resolves.toEqual([
       { packageName: "@ai-sdk/google-vertex", factoryName: "createGoogleVertex" },
-      { packageName: "@ai-sdk/google-vertex", subpath: "anthropic", factoryName: "createVertexAnthropic" },
+      {
+        packageName: "@ai-sdk/google-vertex",
+        subpath: "anthropic",
+        factoryName: "createVertexAnthropic",
+        overrides: { optional: ["project"] },
+      },
     ]);
   });
 

@@ -6,7 +6,12 @@ import { generateProviderArtifacts } from "../scripts/provider-artifacts";
 
 const fixture = async () => {
   const rootPath = await mkdtemp(join(tmpdir(), "provider-artifacts-"));
-  const source = { packageName: "@fixture/provider", subpath: "special", factoryName: "createFixture" } as const;
+  const source = {
+    packageName: "@fixture/provider",
+    subpath: "special",
+    factoryName: "createFixture",
+    overrides: { optional: ["name"] },
+  } as const;
   const packageRoot = join(rootPath, "node_modules", source.packageName);
   await mkdir(packageRoot, { recursive: true });
   await mkdir(join(packageRoot, "special"), { recursive: true });
@@ -23,8 +28,14 @@ const fixture = async () => {
     `
       /** Fixture options. */
       export interface FixtureOptions {
+        /** Provider name. */
+        name: string;
+        /** Base URL. */
+        baseURL: string;
         /** API key. */
         apiKey?: string;
+        /** @deprecated Use apiKey instead. */
+        legacyKey?: string;
         /** Whether enabled. @default true */
         enabled?: boolean;
         fetch?: typeof fetch;
@@ -45,6 +56,10 @@ describe("provider artifact generation", () => {
     expect(artifacts).not.toHaveProperty("typeSource");
     expect(artifacts.zodSource).toContain("PROVIDER_OPTIONS_ZOD_SCHEMAS");
     expect(artifacts.zodSource).toContain("P0ProviderOptionsSchema");
+    expect(artifacts.zodSource).toContain('P0ProviderOptionsSchema.partial({ "name": true })');
+    expect(artifacts.zodSource).toContain('.describe("API key.")');
+    expect(artifacts.zodSource).not.toMatch(/\* API key\.\s+\* @description API key\./u);
+    expect(artifacts.zodSource).toContain("@deprecated Use apiKey instead.");
     expect(artifacts.jsonSource).toContain('"packageVersion": "1.0.0"');
     expect(artifacts).not.toHaveProperty("entries");
     const entries = JSON.parse(
@@ -56,11 +71,13 @@ describe("provider artifact generation", () => {
       type: "object",
       description: "Fixture options.",
       properties: {
+        name: { type: "string", description: "Provider name." },
+        baseURL: { type: "string", description: "Base URL." },
         apiKey: { type: "string", description: "API key." },
         enabled: { type: "boolean", default: true },
       },
     });
-    expect(entries[specifier]?.schema).not.toHaveProperty("required");
+    expect(entries[specifier]?.schema.required).toEqual(["baseURL"]);
     expect(entries[specifier]?.warnings).toEqual([{ code: "unsupported_optional", path: "fetch" }]);
   });
 });

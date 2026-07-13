@@ -31,7 +31,11 @@
   { "packageName": "@ai-sdk/moonshotai", "factoryName": "createMoonshotAI" },
   { "packageName": "@ai-sdk/open-responses", "factoryName": "createOpenResponses" },
   { "packageName": "@ai-sdk/openai", "factoryName": "createOpenAI" },
-  { "packageName": "@ai-sdk/openai-compatible", "factoryName": "createOpenAICompatible" },
+  {
+    "packageName": "@ai-sdk/openai-compatible",
+    "factoryName": "createOpenAICompatible",
+    "overrides": { "optional": ["name"] }
+  },
   { "packageName": "@ai-sdk/perplexity", "factoryName": "createPerplexity" },
   { "packageName": "@ai-sdk/prodia", "factoryName": "createProdia" },
   { "packageName": "@ai-sdk/quiverai", "factoryName": "createQuiverAI" },

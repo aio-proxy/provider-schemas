@@ -1399,8 +1399,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
         }
       },
       "required": [
-        "baseURL",
-        "name"
+        "baseURL"
       ],
       "type": "object"
     },

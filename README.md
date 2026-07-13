@@ -26,6 +26,8 @@ To add a provider:
 1. Add its package and factory names to `providers.json` in import-specifier order; use `subpath` for package exports such as `@ai-sdk/google-vertex/anthropic`.
 2. Run `bun run generate`.
 
+Use `overrides.optional` when an upstream required root option should be optional in the published schema.
+
 Generation installs new Providers from npm at an exact version, removes deleted Providers, and synchronizes `package.json`, `bun.lock`, `.github/dependabot.yml`, `src/zod-module.ts`, and `src/schema-module.ts`. Existing versions are preserved and subsequently updated by Dependabot.
 
 ## Registry security
