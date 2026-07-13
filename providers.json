@@ -20,6 +20,7 @@
   { "packageName": "@ai-sdk/gladia", "factoryName": "createGladia" },
   { "packageName": "@ai-sdk/google", "factoryName": "createGoogle" },
   { "packageName": "@ai-sdk/google-vertex", "factoryName": "createGoogleVertex" },
+  { "packageName": "@ai-sdk/google-vertex", "subpath": "anthropic", "factoryName": "createVertexAnthropic" },
   { "packageName": "@ai-sdk/groq", "factoryName": "createGroq" },
   { "packageName": "@ai-sdk/huggingface", "factoryName": "createHuggingFace" },
   { "packageName": "@ai-sdk/hume", "factoryName": "createHume" },

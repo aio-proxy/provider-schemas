@@ -843,7 +843,61 @@ const P20GoogleVertexProviderSettingsSchema = P20GoogleVertexProviderSettings$1S
 });
 
 export const P20ProviderOptionsSchema = P20GoogleVertexProviderSettingsSchema;
-const P21GroqProviderSettingsSchema = z.object({
+const P21GoogleVertexAnthropicProviderSettings$1Schema = z.object({
+    /**
+     * Google Cloud project ID. Defaults to the value of the `GOOGLE_VERTEX_PROJECT` environment variable.
+     * @description Google Cloud project ID. Defaults to the value of the `GOOGLE_VERTEX_PROJECT` environment variable.
+     */
+    project: z.string().optional().describe("Google Cloud project ID. Defaults to the value of the `GOOGLE_VERTEX_PROJECT` environment variable."),
+    /**
+     * Google Cloud region. Defaults to the value of the `GOOGLE_VERTEX_LOCATION` environment variable.
+     * @description Google Cloud region. Defaults to the value of the `GOOGLE_VERTEX_LOCATION` environment variable.
+     */
+    location: z.string().optional().describe("Google Cloud region. Defaults to the value of the `GOOGLE_VERTEX_LOCATION` environment variable."),
+    /**
+     * Use a different URL prefix for API calls, e.g. to use proxy servers.
+     * The default prefix is `https://api.anthropic.com/v1`.
+     * @description Use a different URL prefix for API calls, e.g. to use proxy servers.
+     * The default prefix is `https://api.anthropic.com/v1`.
+     */
+    baseURL: z.string().optional().describe("Use a different URL prefix for API calls, e.g. to use proxy servers.\nThe default prefix is `https://api.anthropic.com/v1`."),
+    /**
+     * Custom headers to include in the requests.
+     * @description Custom headers to include in the requests.
+     */
+    headers: z.unknown().optional().describe("Custom headers to include in the requests."),
+    /**
+     * Custom fetch implementation. You can use it as a middleware to intercept requests,
+     * or to provide a custom fetch implementation for e.g. testing.
+     * @description Custom fetch implementation. You can use it as a middleware to intercept requests,
+     * or to provide a custom fetch implementation for e.g. testing.
+     */
+    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
+});
+
+const P21GoogleVertexAnthropicProviderSettingsSchema = P21GoogleVertexAnthropicProviderSettings$1Schema.extend({
+    /**
+     * Optional. The Authentication options provided by google-auth-library.
+     * Complete list of authentication options is documented in the
+     * GoogleAuthOptions interface:
+     * https://github.com/googleapis/google-auth-library-nodejs/blob/main/src/auth/googleauth.ts.
+     * @description Optional. The Authentication options provided by google-auth-library.
+     * Complete list of authentication options is documented in the
+     * GoogleAuthOptions interface:
+     * https://github.com/googleapis/google-auth-library-nodejs/blob/main/src/auth/googleauth.ts.
+     */
+    googleAuthOptions: z.unknown().optional().describe("Optional. The Authentication options provided by google-auth-library.\nComplete list of authentication options is documented in the\nGoogleAuthOptions interface:\nhttps://github.com/googleapis/google-auth-library-nodejs/blob/main/src/auth/googleauth.ts."),
+    /**
+     * Optional. Override the Bearer token generator. Defaults to OAuth exchange
+     * via `google-auth-library` with `googleAuthOptions`.
+     * @description Optional. Override the Bearer token generator. Defaults to OAuth exchange
+     * via `google-auth-library` with `googleAuthOptions`.
+     */
+    generateAuthToken: z.unknown().optional().describe("Optional. Override the Bearer token generator. Defaults to OAuth exchange\nvia `google-auth-library` with `googleAuthOptions`.")
+});
+
+export const P21ProviderOptionsSchema = P21GoogleVertexAnthropicProviderSettingsSchema;
+const P22GroqProviderSettingsSchema = z.object({
     /**
      * Base URL for the Groq API calls.
      * @description Base URL for the Groq API calls.
@@ -868,8 +922,8 @@ const P21GroqProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P21ProviderOptionsSchema = P21GroqProviderSettingsSchema;
-const P22HuggingFaceProviderSettingsSchema = z.object({
+export const P22ProviderOptionsSchema = P22GroqProviderSettingsSchema;
+const P23HuggingFaceProviderSettingsSchema = z.object({
     /**
      * Hugging Face API key.
      * @description Hugging Face API key.
@@ -895,8 +949,8 @@ const P22HuggingFaceProviderSettingsSchema = z.object({
     generateId: z.unknown().optional()
 });
 
-export const P22ProviderOptionsSchema = P22HuggingFaceProviderSettingsSchema;
-const P23HumeProviderSettingsSchema = z.object({
+export const P23ProviderOptionsSchema = P23HuggingFaceProviderSettingsSchema;
+const P24HumeProviderSettingsSchema = z.object({
     /**
      * API key for authenticating requests.
      * @description API key for authenticating requests.
@@ -916,8 +970,8 @@ const P23HumeProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P23ProviderOptionsSchema = P23HumeProviderSettingsSchema;
-const P24KlingAIProviderSettingsSchema = z.object({
+export const P24ProviderOptionsSchema = P24HumeProviderSettingsSchema;
+const P25KlingAIProviderSettingsSchema = z.object({
     /**
      * KlingAI Access key. Default value is taken from the `KLINGAI_ACCESS_KEY`
      * environment variable.
@@ -951,8 +1005,8 @@ const P24KlingAIProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept\nrequests, or to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P24ProviderOptionsSchema = P24KlingAIProviderSettingsSchema;
-const P25LMNTProviderSettingsSchema = z.object({
+export const P25ProviderOptionsSchema = P25KlingAIProviderSettingsSchema;
+const P26LMNTProviderSettingsSchema = z.object({
     /**
      * API key for authenticating requests.
      * @description API key for authenticating requests.
@@ -972,8 +1026,8 @@ const P25LMNTProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P25ProviderOptionsSchema = P25LMNTProviderSettingsSchema;
-const P26LumaProviderSettingsSchema = z.object({
+export const P26ProviderOptionsSchema = P26LMNTProviderSettingsSchema;
+const P27LumaProviderSettingsSchema = z.object({
     /**
      * Luma API key. Default value is taken from the `LUMA_API_KEY` environment
      * variable.
@@ -1000,8 +1054,8 @@ const P26LumaProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P26ProviderOptionsSchema = P26LumaProviderSettingsSchema;
-const P27MistralProviderSettingsSchema = z.object({
+export const P27ProviderOptionsSchema = P27LumaProviderSettingsSchema;
+const P28MistralProviderSettingsSchema = z.object({
     /**
      * Use a different URL prefix for API calls, e.g. to use proxy servers.
      * The default prefix is `https://api.mistral.ai/v1`.
@@ -1031,8 +1085,8 @@ const P27MistralProviderSettingsSchema = z.object({
     generateId: z.unknown().optional()
 });
 
-export const P27ProviderOptionsSchema = P27MistralProviderSettingsSchema;
-const P28MoonshotAIProviderSettingsSchema = z.object({
+export const P28ProviderOptionsSchema = P28MistralProviderSettingsSchema;
+const P29MoonshotAIProviderSettingsSchema = z.object({
     /**
      * Moonshot API key. Default value is taken from the `MOONSHOT_API_KEY`
      * environment variable.
@@ -1059,8 +1113,8 @@ const P28MoonshotAIProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P28ProviderOptionsSchema = P28MoonshotAIProviderSettingsSchema;
-const P29OpenResponsesProviderSettingsSchema = z.object({
+export const P29ProviderOptionsSchema = P29MoonshotAIProviderSettingsSchema;
+const P30OpenResponsesProviderSettingsSchema = z.object({
     /**
      * URL for the Open Responses API POST endpoint.
      * @description URL for the Open Responses API POST endpoint.
@@ -1090,8 +1144,8 @@ const P29OpenResponsesProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P29ProviderOptionsSchema = P29OpenResponsesProviderSettingsSchema;
-const P30OpenAIProviderSettingsSchema = z.object({
+export const P30ProviderOptionsSchema = P30OpenResponsesProviderSettingsSchema;
+const P31OpenAIProviderSettingsSchema = z.object({
     /**
      * Base URL for the OpenAI API calls.
      * @description Base URL for the OpenAI API calls.
@@ -1138,8 +1192,8 @@ const P30OpenAIProviderSettingsSchema = z.object({
     webSocket: z.unknown().optional().describe("Custom WebSocket implementation. This is useful for testing or for\nruntimes that need a WebSocket constructor with header support.")
 });
 
-export const P30ProviderOptionsSchema = P30OpenAIProviderSettingsSchema;
-const P31OpenAICompatibleProviderSettingsSchema = z.object({
+export const P31ProviderOptionsSchema = P31OpenAIProviderSettingsSchema;
+const P32OpenAICompatibleProviderSettingsSchema = z.object({
     /**
      * Base URL for the API calls.
      * @description Base URL for the API calls.
@@ -1220,8 +1274,8 @@ const P31OpenAICompatibleProviderSettingsSchema = z.object({
     convertUsage: z.unknown().optional().describe("Optional usage converter for providers with token accounting semantics that\ndiffer from the default OpenAI-compatible shape.")
 });
 
-export const P31ProviderOptionsSchema = P31OpenAICompatibleProviderSettingsSchema;
-const P32PerplexityProviderSettingsSchema = z.object({
+export const P32ProviderOptionsSchema = P32OpenAICompatibleProviderSettingsSchema;
+const P33PerplexityProviderSettingsSchema = z.object({
     /**
      * Base URL for the perplexity API calls.
      * @description Base URL for the perplexity API calls.
@@ -1246,8 +1300,8 @@ const P32PerplexityProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P32ProviderOptionsSchema = P32PerplexityProviderSettingsSchema;
-const P33ProdiaProviderSettingsSchema = z.object({
+export const P33ProviderOptionsSchema = P33PerplexityProviderSettingsSchema;
+const P34ProdiaProviderSettingsSchema = z.object({
     /**
      * Prodia API key. Default value is taken from the `PRODIA_TOKEN` environment variable.
      * @description Prodia API key. Default value is taken from the `PRODIA_TOKEN` environment variable.
@@ -1272,8 +1326,8 @@ const P33ProdiaProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept\nrequests, or to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P33ProviderOptionsSchema = P33ProdiaProviderSettingsSchema;
-const P34QuiverAIProviderSettingsSchema = z.object({
+export const P34ProviderOptionsSchema = P34ProdiaProviderSettingsSchema;
+const P35QuiverAIProviderSettingsSchema = z.object({
     /**
      * QuiverAI API key. Default value is taken from the `QUIVERAI_API_KEY`
      * environment variable.
@@ -1302,8 +1356,8 @@ const P34QuiverAIProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept\nrequests, or to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P34ProviderOptionsSchema = P34QuiverAIProviderSettingsSchema;
-const P35ReplicateProviderSettingsSchema = z.object({
+export const P35ProviderOptionsSchema = P35QuiverAIProviderSettingsSchema;
+const P36ReplicateProviderSettingsSchema = z.object({
     /**
      * API token that is being send using the `Authorization` header.
      * It defaults to the `REPLICATE_API_TOKEN` environment variable.
@@ -1332,8 +1386,8 @@ const P35ReplicateProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P35ProviderOptionsSchema = P35ReplicateProviderSettingsSchema;
-const P36RevaiProviderSettingsSchema = z.object({
+export const P36ProviderOptionsSchema = P36ReplicateProviderSettingsSchema;
+const P37RevaiProviderSettingsSchema = z.object({
     /**
      * API key for authenticating requests.
      * @description API key for authenticating requests.
@@ -1353,8 +1407,8 @@ const P36RevaiProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P36ProviderOptionsSchema = P36RevaiProviderSettingsSchema;
-const P37TogetherAIProviderSettingsSchema = z.object({
+export const P37ProviderOptionsSchema = P37RevaiProviderSettingsSchema;
+const P38TogetherAIProviderSettingsSchema = z.object({
     /**
      * TogetherAI API key.
      * @description TogetherAI API key.
@@ -1379,8 +1433,8 @@ const P37TogetherAIProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P37ProviderOptionsSchema = P37TogetherAIProviderSettingsSchema;
-const P38VercelProviderSettingsSchema = z.object({
+export const P38ProviderOptionsSchema = P38TogetherAIProviderSettingsSchema;
+const P39VercelProviderSettingsSchema = z.object({
     /**
      * Vercel API key.
      * @description Vercel API key.
@@ -1405,16 +1459,16 @@ const P38VercelProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P38ProviderOptionsSchema = P38VercelProviderSettingsSchema;
-const P39VoyageProviderSettingsSchema = z.object({
+export const P39ProviderOptionsSchema = P39VercelProviderSettingsSchema;
+const P40VoyageProviderSettingsSchema = z.object({
     baseURL: z.string().optional(),
     apiKey: z.string().optional(),
     headers: z.record(z.string(), z.string()).optional(),
     fetch: z.unknown().optional()
 });
 
-export const P39ProviderOptionsSchema = P39VoyageProviderSettingsSchema;
-const P40XaiProviderSettingsSchema = z.object({
+export const P40ProviderOptionsSchema = P40VoyageProviderSettingsSchema;
+const P41XaiProviderSettingsSchema = z.object({
     /**
      * Base URL for the xAI API calls.
      * @description Base URL for the xAI API calls.
@@ -1446,8 +1500,8 @@ const P40XaiProviderSettingsSchema = z.object({
     webSocket: z.unknown().optional().describe("Custom WebSocket implementation. Required in runtimes whose native\nWebSocket constructor does not support headers for xAI streaming STT.")
 });
 
-export const P40ProviderOptionsSchema = P40XaiProviderSettingsSchema;
-const P41OpenRouterProviderSettingsSchema = z.object({
+export const P41ProviderOptionsSchema = P41XaiProviderSettingsSchema;
+const P42OpenRouterProviderSettingsSchema = z.object({
     /**
   Base URL for the OpenRouter API calls.
      * @description Base URL for the OpenRouter API calls.
@@ -1511,7 +1565,7 @@ const P41OpenRouterProviderSettingsSchema = z.object({
     appUrl: z.string().optional().describe("Your app's URL or identifier. Sets the `HTTP-Referer` header on every request,\nused to identify your app on the openrouter.ai dashboard.")
 });
 
-export const P41ProviderOptionsSchema = P41OpenRouterProviderSettingsSchema;
+export const P42ProviderOptionsSchema = P42OpenRouterProviderSettingsSchema;
 
 export const PROVIDER_OPTIONS_ZOD_SCHEMAS: Readonly<Record<string, z.ZodType>> = {
   "@ai-sdk/alibaba": P0ProviderOptionsSchema,
@@ -1535,25 +1589,26 @@ export const PROVIDER_OPTIONS_ZOD_SCHEMAS: Readonly<Record<string, z.ZodType>> =
   "@ai-sdk/gladia": P18ProviderOptionsSchema,
   "@ai-sdk/google": P19ProviderOptionsSchema,
   "@ai-sdk/google-vertex": P20ProviderOptionsSchema,
-  "@ai-sdk/groq": P21ProviderOptionsSchema,
-  "@ai-sdk/huggingface": P22ProviderOptionsSchema,
-  "@ai-sdk/hume": P23ProviderOptionsSchema,
-  "@ai-sdk/klingai": P24ProviderOptionsSchema,
-  "@ai-sdk/lmnt": P25ProviderOptionsSchema,
-  "@ai-sdk/luma": P26ProviderOptionsSchema,
-  "@ai-sdk/mistral": P27ProviderOptionsSchema,
-  "@ai-sdk/moonshotai": P28ProviderOptionsSchema,
-  "@ai-sdk/open-responses": P29ProviderOptionsSchema,
-  "@ai-sdk/openai": P30ProviderOptionsSchema,
-  "@ai-sdk/openai-compatible": P31ProviderOptionsSchema,
-  "@ai-sdk/perplexity": P32ProviderOptionsSchema,
-  "@ai-sdk/prodia": P33ProviderOptionsSchema,
-  "@ai-sdk/quiverai": P34ProviderOptionsSchema,
-  "@ai-sdk/replicate": P35ProviderOptionsSchema,
-  "@ai-sdk/revai": P36ProviderOptionsSchema,
-  "@ai-sdk/togetherai": P37ProviderOptionsSchema,
-  "@ai-sdk/vercel": P38ProviderOptionsSchema,
-  "@ai-sdk/voyage": P39ProviderOptionsSchema,
-  "@ai-sdk/xai": P40ProviderOptionsSchema,
-  "@openrouter/ai-sdk-provider": P41ProviderOptionsSchema,
+  "@ai-sdk/google-vertex/anthropic": P21ProviderOptionsSchema,
+  "@ai-sdk/groq": P22ProviderOptionsSchema,
+  "@ai-sdk/huggingface": P23ProviderOptionsSchema,
+  "@ai-sdk/hume": P24ProviderOptionsSchema,
+  "@ai-sdk/klingai": P25ProviderOptionsSchema,
+  "@ai-sdk/lmnt": P26ProviderOptionsSchema,
+  "@ai-sdk/luma": P27ProviderOptionsSchema,
+  "@ai-sdk/mistral": P28ProviderOptionsSchema,
+  "@ai-sdk/moonshotai": P29ProviderOptionsSchema,
+  "@ai-sdk/open-responses": P30ProviderOptionsSchema,
+  "@ai-sdk/openai": P31ProviderOptionsSchema,
+  "@ai-sdk/openai-compatible": P32ProviderOptionsSchema,
+  "@ai-sdk/perplexity": P33ProviderOptionsSchema,
+  "@ai-sdk/prodia": P34ProviderOptionsSchema,
+  "@ai-sdk/quiverai": P35ProviderOptionsSchema,
+  "@ai-sdk/replicate": P36ProviderOptionsSchema,
+  "@ai-sdk/revai": P37ProviderOptionsSchema,
+  "@ai-sdk/togetherai": P38ProviderOptionsSchema,
+  "@ai-sdk/vercel": P39ProviderOptionsSchema,
+  "@ai-sdk/voyage": P40ProviderOptionsSchema,
+  "@ai-sdk/xai": P41ProviderOptionsSchema,
+  "@openrouter/ai-sdk-provider": P42ProviderOptionsSchema,
 };

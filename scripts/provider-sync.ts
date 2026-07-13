@@ -2,6 +2,7 @@ import { join } from "node:path";
 import {
   exactVersion,
   planProviderDependencyChanges,
+  providerPackageNames,
   readManagedProviderNames,
   readProviderSchemaCatalog,
   renderDependabot,
@@ -14,7 +15,7 @@ export const synchronizeProviderConfiguration = async (rootPath: string, check =
   const catalog = await readProviderSchemaCatalog(rootPath);
   const packageJson = record(await Bun.file(join(rootPath, "package.json")).json());
   const devDependencies = record(packageJson["devDependencies"]) as Record<string, string>;
-  const catalogNames = catalog.map(({ packageName }) => packageName);
+  const catalogNames = providerPackageNames(catalog);
   const dependabotPath = join(rootPath, ".github/dependabot.yml");
   const dependabotFile = Bun.file(dependabotPath);
   const currentDependabot = (await dependabotFile.exists()) ? await dependabotFile.text() : "";

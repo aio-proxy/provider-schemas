@@ -2,12 +2,20 @@ import { join } from "node:path";
 
 export type ProviderSchemaSource = {
   readonly packageName: string;
+  readonly subpath?: string;
   readonly factoryName: string;
 };
 
 export const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
 const factoryName = /^[$A-Z_a-z][$\w]*$/u;
 const npmPackageName = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/u;
+
+export const providerSpecifier = ({ packageName, subpath }: ProviderSchemaSource) =>
+  subpath ? `${packageName}/${subpath}` : packageName;
+
+export const providerPackageNames = (catalog: readonly ProviderSchemaSource[]) => [
+  ...new Set(catalog.map(({ packageName }) => packageName)),
+];
 
 const asRecord = (value: unknown, label: string): Readonly<Record<string, unknown>> => {
   if (typeof value !== "object" || value === null || Array.isArray(value))
@@ -22,6 +30,7 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
   const sources = value.map((item, index): ProviderSchemaSource => {
     const entry = asRecord(item, `providers.json entry ${index}`);
     const packageName = entry["packageName"];
+    const subpath = entry["subpath"];
     const providerFactoryName = entry["factoryName"];
     if (typeof packageName !== "string" || !npmPackageName.test(packageName)) {
       throw new Error(`Invalid provider packageName at index ${index}`);
@@ -29,18 +38,20 @@ export const readProviderSchemaCatalog = async (rootPath: string): Promise<reado
     if (typeof providerFactoryName !== "string" || !factoryName.test(providerFactoryName)) {
       throw new Error(`Invalid provider factoryName for ${packageName}`);
     }
-    return { packageName, factoryName: providerFactoryName };
+    if (subpath !== undefined && (typeof subpath !== "string" || subpath.length === 0)) {
+      throw new Error(`Invalid provider subpath for ${packageName}`);
+    }
+    return { packageName, ...(subpath === undefined ? {} : { subpath }), factoryName: providerFactoryName };
   });
 
   const seen = new Set<string>();
+  let previousSpecifier = "";
   for (const source of sources) {
-    if (seen.has(source.packageName)) throw new Error(`Duplicate provider package: ${source.packageName}`);
-    seen.add(source.packageName);
-  }
-  for (let index = 1; index < sources.length; index += 1) {
-    if ((sources[index - 1]?.packageName ?? "") > (sources[index]?.packageName ?? "")) {
-      throw new Error("Provider catalog must be sorted by packageName");
-    }
+    const specifier = providerSpecifier(source);
+    if (seen.has(specifier)) throw new Error(`Duplicate provider: ${specifier}`);
+    if (previousSpecifier > specifier) throw new Error("Provider catalog must be sorted by specifier");
+    seen.add(specifier);
+    previousSpecifier = specifier;
   }
   return sources;
 };
@@ -54,7 +65,9 @@ export const renderDependabot = (catalog: readonly ProviderSchemaSource[]) =>
           "package-ecosystem": "npm",
           directory: "/",
           schedule: { interval: "daily", time: "09:00", timezone: "Asia/Shanghai" },
-          allow: catalog.map(({ packageName }) => ({ "dependency-name": packageName })),
+          allow: providerPackageNames(catalog).map((packageName) => ({
+            "dependency-name": packageName,
+          })),
           groups: { "provider-sources": { patterns: ["*"] } },
           "open-pull-requests-limit": 1,
           "commit-message": { prefix: "fix", include: "scope" },

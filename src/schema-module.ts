@@ -907,6 +907,48 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
       }
     ]
   },
+  "@ai-sdk/google-vertex/anthropic": {
+    "factoryName": "createVertexAnthropic",
+    "packageName": "@ai-sdk/google-vertex/anthropic",
+    "packageVersion": "5.0.16",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": true,
+      "properties": {
+        "baseURL": {
+          "description": "Use a different URL prefix for API calls, e.g. to use proxy servers.\nThe default prefix is `https://api.anthropic.com/v1`.",
+          "type": "string"
+        },
+        "location": {
+          "description": "Google Cloud region. Defaults to the value of the `GOOGLE_VERTEX_LOCATION` environment variable.",
+          "type": "string"
+        },
+        "project": {
+          "description": "Google Cloud project ID. Defaults to the value of the `GOOGLE_VERTEX_PROJECT` environment variable.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "warnings": [
+      {
+        "code": "unresolved_optional",
+        "path": "fetch"
+      },
+      {
+        "code": "unsupported_optional",
+        "path": "generateAuthToken"
+      },
+      {
+        "code": "unresolved_optional",
+        "path": "googleAuthOptions"
+      },
+      {
+        "code": "unresolved_optional",
+        "path": "headers"
+      }
+    ]
+  },
   "@ai-sdk/groq": {
     "factoryName": "createGroq",
     "packageName": "@ai-sdk/groq",

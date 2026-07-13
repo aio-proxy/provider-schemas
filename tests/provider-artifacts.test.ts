@@ -6,15 +6,20 @@ import { generateProviderArtifacts } from "../scripts/provider-artifacts";
 
 const fixture = async () => {
   const rootPath = await mkdtemp(join(tmpdir(), "provider-artifacts-"));
-  const source = { packageName: "@fixture/provider", factoryName: "createFixture" } as const;
+  const source = { packageName: "@fixture/provider", subpath: "special", factoryName: "createFixture" } as const;
   const packageRoot = join(rootPath, "node_modules", source.packageName);
   await mkdir(packageRoot, { recursive: true });
+  await mkdir(join(packageRoot, "special"), { recursive: true });
   await Bun.write(
     join(packageRoot, "package.json"),
-    JSON.stringify({ name: source.packageName, version: "1.0.0", types: "./index.d.ts" }),
+    JSON.stringify({
+      name: source.packageName,
+      version: "1.0.0",
+      exports: { "./special": { types: "./special/index.d.ts" } },
+    }),
   );
   await Bun.write(
-    join(packageRoot, "index.d.ts"),
+    join(packageRoot, "special/index.d.ts"),
     `
       /** Fixture options. */
       export interface FixtureOptions {
@@ -45,7 +50,9 @@ describe("provider artifact generation", () => {
     const entries = JSON.parse(
       artifacts.jsonSource.slice(artifacts.jsonSource.indexOf(" = ") + 3, artifacts.jsonSource.lastIndexOf(";")),
     );
-    expect(entries[fixtureData.source.packageName]?.schema).toMatchObject({
+    const specifier = `${fixtureData.source.packageName}/${fixtureData.source.subpath}`;
+    expect(entries[specifier]?.packageName).toBe(specifier);
+    expect(entries[specifier]?.schema).toMatchObject({
       type: "object",
       description: "Fixture options.",
       properties: {
@@ -53,9 +60,7 @@ describe("provider artifact generation", () => {
         enabled: { type: "boolean", default: true },
       },
     });
-    expect(entries[fixtureData.source.packageName]?.schema).not.toHaveProperty("required");
-    expect(entries[fixtureData.source.packageName]?.warnings).toEqual([
-      { code: "unsupported_optional", path: "fetch" },
-    ]);
+    expect(entries[specifier]?.schema).not.toHaveProperty("required");
+    expect(entries[specifier]?.warnings).toEqual([{ code: "unsupported_optional", path: "fetch" }]);
   });
 });

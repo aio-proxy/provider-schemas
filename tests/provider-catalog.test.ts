@@ -54,11 +54,16 @@ const writeFixture = async ({
 
 describe("provider schema catalog", () => {
   test("reads provider sources", async () => {
-    const rootPath = await writeFixture();
+    const rootPath = await writeFixture({
+      providers: [
+        { packageName: "@ai-sdk/google-vertex", factoryName: "createGoogleVertex" },
+        { packageName: "@ai-sdk/google-vertex", subpath: "anthropic", factoryName: "createVertexAnthropic" },
+      ],
+    });
 
     await expect(readProviderSchemaCatalog(rootPath)).resolves.toEqual([
-      { packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" },
-      { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
+      { packageName: "@ai-sdk/google-vertex", factoryName: "createGoogleVertex" },
+      { packageName: "@ai-sdk/google-vertex", subpath: "anthropic", factoryName: "createVertexAnthropic" },
     ]);
   });
 
@@ -70,9 +75,7 @@ describe("provider schema catalog", () => {
       ],
       devDependencies: { "@ai-sdk/openai": "4.0.11" },
     });
-    await expect(readProviderSchemaCatalog(duplicateRoot)).rejects.toThrow(
-      "Duplicate provider package: @ai-sdk/openai",
-    );
+    await expect(readProviderSchemaCatalog(duplicateRoot)).rejects.toThrow("Duplicate provider: @ai-sdk/openai");
 
     const unsortedRoot = await writeFixture({
       providers: [
@@ -81,13 +84,14 @@ describe("provider schema catalog", () => {
       ],
     });
     await expect(readProviderSchemaCatalog(unsortedRoot)).rejects.toThrow(
-      "Provider catalog must be sorted by packageName",
+      "Provider catalog must be sorted by specifier",
     );
   });
 
   test("renders and reads one exact Dependabot allow list", () => {
     const catalog = [
-      { packageName: "@ai-sdk/anthropic", factoryName: "createAnthropic" },
+      { packageName: "@ai-sdk/google-vertex", factoryName: "createGoogleVertex" },
+      { packageName: "@ai-sdk/google-vertex", subpath: "anthropic", factoryName: "createVertexAnthropic" },
       { packageName: "@ai-sdk/openai", factoryName: "createOpenAI" },
     ] as const;
     const source = renderDependabot(catalog);
@@ -101,7 +105,9 @@ describe("provider schema catalog", () => {
               "package-ecosystem": "npm",
               directory: "/",
               schedule: { interval: "daily", time: "09:00", timezone: "Asia/Shanghai" },
-              allow: catalog.map(({ packageName }) => ({ "dependency-name": packageName })),
+              allow: ["@ai-sdk/google-vertex", "@ai-sdk/openai"].map((packageName) => ({
+                "dependency-name": packageName,
+              })),
               groups: { "provider-sources": { patterns: ["*"] } },
               "open-pull-requests-limit": 1,
               "commit-message": { prefix: "fix", include: "scope" },
@@ -113,7 +119,7 @@ describe("provider schema catalog", () => {
       ).replaceAll(": \n", ":\n"),
     );
     expect(source).not.toMatch(/ +$/mu);
-    expect(readManagedProviderNames(source)).toEqual(["@ai-sdk/anthropic", "@ai-sdk/openai"]);
+    expect(readManagedProviderNames(source)).toEqual(["@ai-sdk/google-vertex", "@ai-sdk/openai"]);
   });
 
   test("plans provider changes without touching tools", () => {

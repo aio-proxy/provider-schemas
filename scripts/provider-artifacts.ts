@@ -6,7 +6,7 @@ import { Project, SyntaxKind } from "ts-morph";
 import { generate } from "ts-to-zod";
 import { z } from "zod";
 import type { ProviderOptionsSchemaEntry } from "../src/types";
-import { type ProviderSchemaSource, readProviderSchemaCatalog } from "./provider-catalog";
+import { type ProviderSchemaSource, providerSpecifier, readProviderSchemaCatalog } from "./provider-catalog";
 import { extractProviderDeclaration } from "./provider-declaration";
 
 const compare = (left: string, right: string) => (left < right ? -1 : left > right ? 1 : 0);
@@ -17,18 +17,19 @@ const stringProperty = (value: unknown, key: string) => {
   return typeof property === "string" ? property : undefined;
 };
 
-const readProviderPackage = async (packageRoot: string) => {
+const readProviderPackage = async (packageRoot: string, subpath?: string) => {
   const value: unknown = await Bun.file(join(packageRoot, "package.json")).json();
   const version = stringProperty(value, "version");
   if (!version) throw new Error("Provider package metadata requires a version");
   const exportsValue =
     typeof value === "object" && value !== null ? (value as { exports?: unknown }).exports : undefined;
-  const rootExport =
+  const selectedExport =
     typeof exportsValue === "object" && exportsValue !== null
-      ? (exportsValue as Record<string, unknown>)["."]
+      ? (exportsValue as Record<string, unknown>)[subpath ? `./${subpath}` : "."]
       : undefined;
   const declarationEntry =
-    stringProperty(rootExport, "types") ?? stringProperty(value, "types") ?? stringProperty(value, "typings");
+    stringProperty(selectedExport, "types") ??
+    (subpath ? undefined : (stringProperty(value, "types") ?? stringProperty(value, "typings")));
   if (!declarationEntry) throw new Error("Provider package has no declaration entry");
   return { version, declarationEntry };
 };
@@ -107,7 +108,7 @@ export const generateProviderArtifacts = async (rootPath: string) => {
 
   for (const [index, source] of sources.entries()) {
     const packageRoot = await realpath(await resolveInstalledProviderSource(rootPath, source));
-    const packageMetadata = await readProviderPackage(packageRoot);
+    const packageMetadata = await readProviderPackage(packageRoot, source.subpath);
     const extracted = await extractProviderDeclaration({
       packageRoot,
       declarationEntry: await resolveDeclarationEntry(packageRoot, packageMetadata.declarationEntry),
@@ -121,7 +122,7 @@ export const generateProviderArtifacts = async (rootPath: string) => {
     });
     if (generated.errors.length > 0) throw new Error(generated.errors.join("\n"));
     schemaSources.push(schemaBody(generated.getZodSchemasFile("")));
-    mapEntries.push(`  ${JSON.stringify(source.packageName)}: ${namespaced.rootSchemaName},`);
+    mapEntries.push(`  ${JSON.stringify(providerSpecifier(source))}: ${namespaced.rootSchemaName},`);
     metadata.push({ source, packageVersion: packageMetadata.version, warnings: extracted.warnings });
   }
 
@@ -140,8 +141,9 @@ export const generateProviderArtifacts = async (rootPath: string) => {
   const entries: Record<string, ProviderOptionsSchemaEntry> = {};
 
   for (const item of metadata) {
-    const zodSchema = zodSchemas[item.source.packageName];
-    if (!zodSchema) throw new Error(`Generated Zod schema is missing: ${item.source.packageName}`);
+    const specifier = providerSpecifier(item.source);
+    const zodSchema = zodSchemas[specifier];
+    if (!zodSchema) throw new Error(`Generated Zod schema is missing: ${specifier}`);
     const schema = z.toJSONSchema(zodSchema, {
       unrepresentable: "any",
       io: "input",
@@ -151,8 +153,8 @@ export const generateProviderArtifacts = async (rootPath: string) => {
     schema["additionalProperties"] = true;
     const properties = schema["properties"] as Record<string, unknown> | undefined;
     for (const warning of item.warnings) delete properties?.[warning.path];
-    entries[item.source.packageName] = {
-      packageName: item.source.packageName,
+    entries[specifier] = {
+      packageName: specifier,
       packageVersion: item.packageVersion,
       factoryName: item.source.factoryName,
       schema,
