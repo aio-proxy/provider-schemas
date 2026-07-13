@@ -1,0 +1,21 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: Asia/Shanghai
+    allow:
+      - dependency-name: "@ai-sdk/*"
+      - dependency-name: "@openrouter/ai-sdk-provider"
+    groups:
+      provider-sources:
+        patterns:
+          - "@ai-sdk/*"
+          - "@openrouter/ai-sdk-provider"
+    open-pull-requests-limit: 1
+    commit-message:
+      prefix: fix
+      include: scope

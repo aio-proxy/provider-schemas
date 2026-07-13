@@ -1,0 +1,4 @@
+pre-commit:
+  commands:
+    npm-security:
+      run: bun scripts/check-npm-security.ts --staged
