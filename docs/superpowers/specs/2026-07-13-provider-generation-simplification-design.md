@@ -4,7 +4,7 @@
 
 Make `providers.json` the only file a maintainer edits when adding or removing a provider. A single `bun run generate` command synchronizes provider dependencies, the lockfile, Dependabot policy, and the generated schema snapshot.
 
-At the same time, simplify the complete `scripts/` implementation. Prefer Bun-native file and process APIs, replace the custom declaration graph parser with `ts-morph`, remove unused build-only capabilities, and materially reduce the amount of code without weakening the repository's security guarantees.
+At the same time, simplify the complete `scripts/` implementation. Prefer Bun-native file and process APIs, replace the custom declaration graph parser with `ts-morph`, generate Zod 4 schemas with `ts-to-zod`, remove unused build-only capabilities, and materially reduce the amount of code without weakening the repository's security guarantees.
 
 ## Source of truth
 
@@ -62,7 +62,7 @@ The refactor should leave a small number of modules with direct responsibilities
 
 - generation orchestration and configuration synchronization;
 - Provider declaration analysis and schema rendering;
-- schema normalization;
+- Zod and JSON Schema generation;
 - npm registry and credential security scanning.
 
 Existing thin modules may be merged or deleted when they no longer define a useful boundary. No general-purpose configuration generation framework is introduced.
@@ -76,9 +76,9 @@ The analyzer:
 - loads the package declaration entry selected from `exports["."].types`, `types`, or `typings`;
 - resolves the configured factory from the entry module's exported declarations, including named re-exports and export stars;
 - selects the first public call signature and reads its first parameter type;
-- collects the referenced declarations needed by TypeBox;
+- collects the referenced declarations needed by `ts-to-zod`;
 - reads declaration and property JSDoc;
-- uses the same AST layer to handle the existing `typeof fetch` compatibility rewrite.
+- sanitizes unsupported optional properties before schema generation and records warnings for them.
 
 Remove `@babel/parser` after the migration. Direct TypeScript Compiler API calls are allowed only where `ts-morph` has no suitable read-only API and the fallback is smaller than a custom workaround.
 
@@ -91,16 +91,34 @@ The following existing outputs are not part of the production contract and are r
 
 TypeScript/ts-morph owns module resolution and cycle handling instead of duplicating those mechanisms locally.
 
-### Schema normalization
+### Zod and JSON Schema generation
 
-Keep only normalization behavior exercised by the installed provider catalog and required by the public output contract:
+Use `ts-to-zod` to convert the declaration source prepared by `ts-morph` into Zod 4 source. Remove TypeBox and its compatibility layer.
+
+`ts-to-zod` 5.x currently carries its own TypeScript 5 dependency while this repository compiles with TypeScript 6. Keep a source-text boundary between the tools: `ts-morph` emits a deterministic standalone TypeScript source, and `ts-to-zod` consumes that source. Never pass compiler AST nodes between their TypeScript instances. The full Provider catalog is the compatibility gate; if `ts-to-zod` cannot process that standalone source reliably, generate the equivalent Zod source directly from `ts-morph` rather than retaining two partial conversion paths.
+
+Generation writes a deterministic Zod module and evaluates the same generated schemas at build time with Zod 4's `z.toJSONSchema()` to produce the existing static JSON Schema snapshot. Zod conversion uses `unrepresentable: "throw"`; unsupported types must be handled explicitly before conversion rather than silently becoming `{}`.
+
+Keep only compatibility behavior exercised by the installed provider catalog and required by the public output contract:
 
 - resolve local definitions and recursive references;
 - omit unsupported optional properties with warnings;
 - fail schemas when unsupported required properties make the root unusable;
 - retain descriptions and deterministic ordering.
 
-Branches that are neither used by the current Provider set nor needed by these policies may be deleted. The committed `src/schema-module.ts` is the behavioral regression baseline.
+Branches that are neither used by the current Provider set nor needed by these policies may be deleted. The committed `src/schema-module.ts` is the behavioral regression baseline. Any unavoidable JSON Schema differences caused by Zod 4 must be reviewed explicitly rather than accepted as broad snapshot churn.
+
+### Public Zod subpath
+
+The main package entry remains JSON-only and does not import Zod at runtime.
+
+Add an explicit `@aio-proxy/provider-schemas/zod` export containing:
+
+- a widened `Readonly<Record<string, z.ZodType>>` Provider schema map;
+- a lookup function returning the Zod schema for a package name;
+- types needed to consume that lookup without exposing the full generated literal type.
+
+Declare `zod` as an optional peer dependency and as an exact development dependency used for generation and tests. The peer range expresses Zod 4 compatibility and is not subject to the exact-version rule used for installed dependencies. Importing the main entry must continue to work without Zod installed; importing the `/zod` subpath requires the consumer to provide a compatible Zod 4 version.
 
 ### Security scanning
 
@@ -109,7 +127,7 @@ Security is not an edge capability. Preserve all existing protections:
 - forbid tracked package-manager registry configuration;
 - reject private registries and credential-bearing URLs;
 - reject npm credentials without echoing their values;
-- require exact dependency versions;
+- require exact versions for installed dependencies;
 - scan the staged index, working tree, and reachable Git history.
 
 The implementation may be shortened and switched to Bun file/process APIs, but these checks and their fail-closed behavior remain.
@@ -150,6 +168,9 @@ Tests cover:
 - check mode is offline, read-only, and rejects drift;
 - generation is idempotent;
 - ts-morph resolves direct exports, named re-exports, export stars, aliases, overloads, referenced declarations, cycles, and JSDoc needed by real Providers;
+- ts-to-zod produces executable Zod 4 schemas for the current Provider catalog;
+- Zod 4 JSON Schema output preserves the existing public schema behavior and warnings;
+- the main entry imports successfully without Zod while the `/zod` subpath validates representative Provider options;
 - all current npm security guarantees remain covered;
 - the current 42-Provider schema snapshot remains unchanged unless an intentional, reviewed normalization correction is required.
 
@@ -162,10 +183,11 @@ The refactor is successful only if:
 - maintainers add or remove Providers by editing only `providers.json` and running `bun run generate`;
 - the number of scripts and total production script lines decrease materially;
 - the custom declaration graph parser and `@babel/parser` are removed;
+- TypeBox and its custom normalization pipeline are removed;
 - unused parser outputs and dependency tracking are removed;
 - duplicated Provider lists and wildcard-matching validation code are removed;
 - no new abstraction exists solely for hypothetical future generators;
-- the published package still contains no runtime dependency or build-script leakage.
+- the main entry has no runtime Zod import or build-script leakage, and Zod is isolated to the explicit `/zod` subpath.
 
 If the ts-morph implementation does not remove substantially more code than it adds, use the direct TypeScript Compiler API instead rather than keeping both layers.
 
@@ -174,5 +196,5 @@ If the ts-morph implementation does not remove substantially more code than it a
 - Storing Provider versions in `providers.json`.
 - Replacing Dependabot with a custom updater.
 - Automatically committing generated files from local hooks or CI.
-- Changing the public runtime API.
-- Weakening registry, credential, exact-version, or Git-history security checks.
+- Changing the existing main-entry runtime API.
+- Weakening registry, credential, installed-dependency exact-version, or Git-history security checks.
