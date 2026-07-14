@@ -191,12 +191,11 @@ jobs:
       - run: bun install --frozen-lockfile --ignore-scripts --registry=https://registry.npmjs.org
 
       - name: Create release pull request or publish
-        uses: changesets/action@v2
+        uses: changesets/action@v1
         with:
-          publish-script: bun run release
+          publish: bun run release
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          create-github-releases: true
-          push-git-tags: true
+          createGithubReleases: true
 ```
 
 - [ ] **Step 3: Validate both workflows**
