@@ -2,6 +2,10 @@
   "name": "@aio-proxy/provider-schemas",
   "version": "0.1.1",
   "description": "Generated JSON Schemas for AI SDK provider options",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aio-proxy/provider-schemas.git"
+  },
   "type": "module",
   "packageManager": "bun@1.3.14",
   "license": "MIT",
