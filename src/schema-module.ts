@@ -7,6 +7,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/alibaba",
     "packageVersion": "2.0.9",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -22,18 +23,19 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "includeUsage": {
-          "description": "Include usage information in streaming responses.\nWhen enabled, token usage will be included in the final chunk.\n@default true",
+          "default": true,
+          "description": "Include usage information in streaming responses.\nWhen enabled, token usage will be included in the final chunk.",
           "type": "boolean"
         },
         "videoBaseURL": {
@@ -55,6 +57,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/amazon-bedrock",
     "packageVersion": "5.0.17",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "accessKeyId": {
@@ -62,7 +65,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "apiKey": {
-          "description": "API key for authenticating requests using Bearer token authentication.\nWhen provided, this will be used instead of AWS SigV4 authentication.\nDefaults to the value of the `AWS_BEARER_TOKEN_BEDROCK` environment variable.\n@example\n```typescript\n// Using API key directly\nconst bedrock = createAmazonBedrock({\napiKey: 'your-api-key-here',\nregion: 'us-east-1'\n});\n// Using environment variable AWS_BEARER_TOKEN_BEDROCK\nconst bedrock = createAmazonBedrock({\nregion: 'us-east-1'\n});\n```\nNote: When `apiKey` is provided, it takes precedence over AWS SigV4 authentication.\nIf neither `apiKey` nor `AWS_BEARER_TOKEN_BEDROCK` environment variable is set,\nthe provider will fall back to AWS SigV4 authentication using AWS credentials.",
+          "description": "API key for authenticating requests using Bearer token authentication.\nWhen provided, this will be used instead of AWS SigV4 authentication.\nDefaults to the value of the `AWS_BEARER_TOKEN_BEDROCK` environment variable.",
           "type": "string"
         },
         "baseURL": {
@@ -70,14 +73,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "region": {
@@ -115,6 +118,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/anthropic",
     "packageVersion": "4.0.12",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -130,14 +134,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "name": {
@@ -163,6 +167,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/anthropic-aws",
     "packageVersion": "2.0.4",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "accessKeyId": {
@@ -176,6 +181,22 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
         "baseURL": {
           "description": "Base URL for the Claude Platform on AWS API calls.",
           "type": "string"
+        },
+        "headers": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {}
+            ],
+            "description": "Custom headers to include in the requests."
+          },
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
         },
         "region": {
           "description": "The AWS region to use for Claude Platform on AWS. Defaults to the value of the\n`AWS_REGION` environment variable. Required — there is no fallback default.",
@@ -208,10 +229,6 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
       {
         "code": "unsupported_optional",
         "path": "generateId"
-      },
-      {
-        "code": "unsupported_optional",
-        "path": "headers"
       }
     ]
   },
@@ -220,6 +237,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/assemblyai",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -227,14 +245,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -252,6 +270,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/azure",
     "packageVersion": "4.0.11",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -263,22 +282,22 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "baseURL": {
-          "description": "Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.\nWhen a baseURL is provided, the resourceName is ignored.\nWith an Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.\nWith a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`.",
+          "description": "Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.\nWhen a baseURL is provided, the resourceName is ignored.\n\nWith an Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.\nWith a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`.",
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "resourceName": {
-          "description": "Name of the Azure OpenAI resource. Either this or `baseURL` can be used.\nThe resource name is used in the assembled URL: `https://{resourceName}.openai.azure.com/openai/v1{path}`.",
+          "description": "Name of the Azure OpenAI resource. Either this or `baseURL` can be used.\n\nThe resource name is used in the assembled URL: `https://{resourceName}.openai.azure.com/openai/v1{path}`.",
           "type": "string"
         },
         "useDeploymentBasedUrls": {
@@ -304,6 +323,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/baseten",
     "packageVersion": "2.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -315,14 +335,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "modelURL": {
@@ -344,6 +364,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/black-forest-labs",
     "packageVersion": "2.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -355,14 +376,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "pollIntervalMillis": {
@@ -388,6 +409,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/bytedance",
     "packageVersion": "2.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -399,14 +421,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -424,6 +446,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/cerebras",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -435,14 +458,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -460,6 +483,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/cohere",
     "packageVersion": "4.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -471,14 +495,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -500,6 +524,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/deepgram",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -507,14 +532,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -532,6 +557,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/deepinfra",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -543,14 +569,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -568,6 +594,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/deepseek",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -579,14 +606,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -604,6 +631,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/elevenlabs",
     "packageVersion": "3.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -611,14 +639,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -636,6 +664,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/fal",
     "packageVersion": "3.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -647,14 +676,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -672,6 +701,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/fireworks",
     "packageVersion": "3.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -683,14 +713,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -708,6 +738,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/gateway",
     "packageVersion": "4.0.16",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -719,14 +750,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "metadataCacheRefreshMillis": {
@@ -752,6 +783,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/gladia",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -759,14 +791,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -784,6 +816,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/google",
     "packageVersion": "4.0.12",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -793,6 +826,22 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
         "baseURL": {
           "description": "Use a different URL prefix for API calls, e.g. to use proxy servers.\nThe default prefix is `https://generativelanguage.googleapis.com/v1beta`.",
           "type": "string"
+        },
+        "headers": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {}
+            ],
+            "description": "Custom headers to include in the requests."
+          },
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
         },
         "name": {
           "description": "Custom provider name\nDefaults to 'google.generative-ai'.",
@@ -809,10 +858,6 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
       {
         "code": "unsupported_optional",
         "path": "generateId"
-      },
-      {
-        "code": "unsupported_optional",
-        "path": "headers"
       }
     ]
   },
@@ -821,41 +866,23 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/google-vertex",
     "packageVersion": "5.0.16",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
+          "description": "Optional. The API key for the Google Cloud project. If provided, the\nprovider will use express mode with API key authentication. Defaults to\nthe value of the `GOOGLE_VERTEX_API_KEY` environment variable.",
           "type": "string"
         },
         "baseURL": {
+          "description": "Base URL for the Google Vertex API calls.",
           "type": "string"
         },
-        "headers": {
-          "arguments": [
-            {
-              "patternProperties": {
-                "^.*$": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "undefined"
-                    }
-                  ]
-                }
-              },
-              "type": "object"
-            }
-          ],
-          "target": {
-            "$ref": "Resolvable"
-          },
-          "type": "call"
-        },
         "location": {
+          "description": "Your Google Vertex location. Defaults to the environment variable `GOOGLE_VERTEX_LOCATION`.",
           "type": "string"
         },
         "project": {
+          "description": "Your Google Vertex project. Defaults to the environment variable `GOOGLE_VERTEX_PROJECT`.",
           "type": "string"
         }
       },
@@ -873,6 +900,52 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
       {
         "code": "unresolved_optional",
         "path": "googleAuthOptions"
+      },
+      {
+        "code": "unresolved_optional",
+        "path": "headers"
+      }
+    ]
+  },
+  "@ai-sdk/google-vertex/anthropic": {
+    "factoryName": "createVertexAnthropic",
+    "packageName": "@ai-sdk/google-vertex/anthropic",
+    "packageVersion": "5.0.16",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": true,
+      "properties": {
+        "baseURL": {
+          "description": "Use a different URL prefix for API calls, e.g. to use proxy servers.\nThe default prefix is `https://api.anthropic.com/v1`.",
+          "type": "string"
+        },
+        "location": {
+          "description": "Google Cloud region. Defaults to the value of the `GOOGLE_VERTEX_LOCATION` environment variable.",
+          "type": "string"
+        },
+        "project": {
+          "description": "Google Cloud project ID. Defaults to the value of the `GOOGLE_VERTEX_PROJECT` environment variable.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "warnings": [
+      {
+        "code": "unresolved_optional",
+        "path": "fetch"
+      },
+      {
+        "code": "unsupported_optional",
+        "path": "generateAuthToken"
+      },
+      {
+        "code": "unresolved_optional",
+        "path": "googleAuthOptions"
+      },
+      {
+        "code": "unresolved_optional",
+        "path": "headers"
       }
     ]
   },
@@ -881,6 +954,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/groq",
     "packageVersion": "4.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -892,14 +966,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -917,6 +991,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/huggingface",
     "packageVersion": "2.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -928,14 +1003,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -957,6 +1032,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/hume",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -964,14 +1040,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -989,6 +1065,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/klingai",
     "packageVersion": "4.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "accessKey": {
@@ -1000,14 +1077,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "secretKey": {
@@ -1029,6 +1106,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/lmnt",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1036,14 +1114,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1061,6 +1139,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/luma",
     "packageVersion": "3.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1072,14 +1151,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1097,6 +1176,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/mistral",
     "packageVersion": "4.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1108,14 +1188,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1137,6 +1217,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/moonshotai",
     "packageVersion": "3.0.9",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1148,14 +1229,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1173,6 +1254,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/open-responses",
     "packageVersion": "2.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1180,14 +1262,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "name": {
@@ -1217,6 +1299,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/openai",
     "packageVersion": "4.0.11",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1228,14 +1311,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "name": {
@@ -1269,6 +1352,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/openai-compatible",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1280,14 +1364,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Optional custom headers to include in requests. These will be added to request headers\nafter any headers potentially added by use of the `apiKey` option.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Optional custom headers to include in requests. These will be added to request headers\nafter any headers potentially added by use of the `apiKey` option.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Optional custom headers to include in requests. These will be added to request headers\nafter any headers potentially added by use of the `apiKey` option.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "includeUsage": {
@@ -1299,14 +1383,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "queryParams": {
-          "additionalProperties": true,
-          "description": "Optional custom url query parameters to include in request urls.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Optional custom url query parameters to include in request urls.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Optional custom url query parameters to include in request urls.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "supportsStructuredOutputs": {
@@ -1315,14 +1399,13 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
         }
       },
       "required": [
-        "baseURL",
-        "name"
+        "baseURL"
       ],
       "type": "object"
     },
     "warnings": [
       {
-        "code": "unresolved_optional",
+        "code": "unsupported_optional",
         "path": "convertUsage"
       },
       {
@@ -1330,11 +1413,11 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
         "path": "fetch"
       },
       {
-        "code": "unresolved_optional",
+        "code": "unsupported_optional",
         "path": "metadataExtractor"
       },
       {
-        "code": "unresolved_optional",
+        "code": "unsupported_optional",
         "path": "supportedUrls"
       },
       {
@@ -1348,6 +1431,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/perplexity",
     "packageVersion": "4.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1359,14 +1443,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1384,6 +1468,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/prodia",
     "packageVersion": "2.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1395,14 +1480,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1420,6 +1505,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/quiverai",
     "packageVersion": "2.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1431,14 +1517,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1456,6 +1542,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/replicate",
     "packageVersion": "3.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiToken": {
@@ -1467,14 +1554,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1492,6 +1579,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/revai",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1499,14 +1587,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1524,6 +1612,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/togetherai",
     "packageVersion": "3.0.8",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1535,14 +1624,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1560,6 +1649,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/vercel",
     "packageVersion": "3.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1571,14 +1661,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1596,6 +1686,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/voyage",
     "packageVersion": "2.0.7",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1605,13 +1696,12 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "type": "string"
           },
-          "properties": {},
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1629,6 +1719,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@ai-sdk/xai",
     "packageVersion": "4.0.10",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1640,14 +1731,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },
@@ -1669,6 +1760,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "packageName": "@openrouter/ai-sdk-provider",
     "packageVersion": "3.0.0",
     "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
       "properties": {
         "apiKey": {
@@ -1676,14 +1768,14 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "api_keys": {
-          "additionalProperties": true,
-          "description": "Record of provider slugs to API keys for injecting into provider routing.\nMaps provider slugs (e.g. \"anthropic\", \"openai\") to their respective API keys.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Record of provider slugs to API keys for injecting into provider routing.\nMaps provider slugs (e.g. \"anthropic\", \"openai\") to their respective API keys.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Record of provider slugs to API keys for injecting into provider routing.\nMaps provider slugs (e.g. \"anthropic\", \"openai\") to their respective API keys.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "appName": {
@@ -1699,7 +1791,6 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "baseUrl": {
-          "description": "@deprecated Use `baseURL` instead.",
           "type": "string"
         },
         "compatibility": {
@@ -1716,23 +1807,24 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "description": "OpenRouter compatibility mode. Should be set to `strict` when using the OpenRouter API,\nand `compatible` when using 3rd party providers. In `compatible` mode, newer\ninformation such as streamOptions are not being sent. Defaults to 'compatible'."
         },
         "extraBody": {
-          "additionalProperties": true,
-          "description": "A JSON object to send as the request body to access OpenRouter features & upstream provider features.",
-          "patternProperties": {
-            "^.*$": {}
+          "additionalProperties": {
+            "description": "A JSON object to send as the request body to access OpenRouter features & upstream provider features."
           },
-          "properties": {},
+          "description": "A JSON object to send as the request body to access OpenRouter features & upstream provider features.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         },
         "headers": {
-          "additionalProperties": true,
-          "description": "Custom headers to include in the requests.",
-          "patternProperties": {
-            "^.*$": {
-              "type": "string"
-            }
+          "additionalProperties": {
+            "description": "Custom headers to include in the requests.",
+            "type": "string"
           },
-          "properties": {},
+          "description": "Custom headers to include in the requests.",
+          "propertyNames": {
+            "type": "string"
+          },
           "type": "object"
         }
       },

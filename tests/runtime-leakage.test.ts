@@ -5,7 +5,7 @@ import { join } from "node:path";
 const distRoot = join(import.meta.dir, "../dist");
 const repositoryRoot = join(import.meta.dir, "..");
 const buildOnlyImport =
-  /(?:from\s*|import\s*\()\s*["'](?:@babel\/parser|typebox|node:fs|node:path|bun|@ai-sdk\/|@openrouter\/)/u;
+  /(?:from\s*|import\s*\()\s*["'](?:ts-morph|ts-to-zod|node:fs|node:path|bun|@ai-sdk\/|@openrouter\/)/u;
 
 const readRuntimeFiles = async (root: string): Promise<string> => {
   const contents: string[] = [];
@@ -25,8 +25,8 @@ test("published runtime artifacts exclude generator tooling and provider imports
 
   const runtimeSource = await readRuntimeFiles(distRoot);
   expect(runtimeSource.match(buildOnlyImport)).toBeNull();
-  expect(runtimeSource).not.toContain("provider-schemas-generator");
-  expect(runtimeSource).not.toContain("declaration-parser");
+  expect(runtimeSource).not.toContain("provider-artifacts");
+  expect(runtimeSource).not.toContain("provider-declaration");
 
   const declaration = await readFile(join(distRoot, "schema-module.d.ts"), "utf8");
   expect(declaration).toContain("Readonly<Record<string, ProviderOptionsSchemaEntry>>");

@@ -20,6 +20,7 @@
   { "packageName": "@ai-sdk/gladia", "factoryName": "createGladia" },
   { "packageName": "@ai-sdk/google", "factoryName": "createGoogle" },
   { "packageName": "@ai-sdk/google-vertex", "factoryName": "createGoogleVertex" },
+  { "packageName": "@ai-sdk/google-vertex", "subpath": "anthropic", "factoryName": "createVertexAnthropic" },
   { "packageName": "@ai-sdk/groq", "factoryName": "createGroq" },
   { "packageName": "@ai-sdk/huggingface", "factoryName": "createHuggingFace" },
   { "packageName": "@ai-sdk/hume", "factoryName": "createHume" },
@@ -30,7 +31,11 @@
   { "packageName": "@ai-sdk/moonshotai", "factoryName": "createMoonshotAI" },
   { "packageName": "@ai-sdk/open-responses", "factoryName": "createOpenResponses" },
   { "packageName": "@ai-sdk/openai", "factoryName": "createOpenAI" },
-  { "packageName": "@ai-sdk/openai-compatible", "factoryName": "createOpenAICompatible" },
+  {
+    "packageName": "@ai-sdk/openai-compatible",
+    "factoryName": "createOpenAICompatible",
+    "overrides": { "optional": ["name"] }
+  },
   { "packageName": "@ai-sdk/perplexity", "factoryName": "createPerplexity" },
   { "packageName": "@ai-sdk/prodia", "factoryName": "createProdia" },
   { "packageName": "@ai-sdk/quiverai", "factoryName": "createQuiverAI" },
