@@ -1,4 +1,5 @@
 pre-commit:
   commands:
-    npm-security:
-      run: bun scripts/check-npm-security.ts --staged
+    bun-lock-check:
+      glob: "{bun.lock,package.json,bunfig.toml}"
+      run: bun scripts/bun-lock-check.ts
