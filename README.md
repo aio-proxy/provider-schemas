@@ -40,3 +40,18 @@ bunx lefthook install
 ```
 
 Lefthook checks the staged Git index before every commit. CI additionally scans the complete reachable commit history, so credentials or private registry URLs remain blocked even if a later commit removes them.
+
+## Releases
+
+Changesets maintains the release pull request and publishes merged versions through npm Trusted Publishing. Dependabot pull requests receive a patch changeset automatically; other user-facing pull requests should include an appropriate changeset.
+
+The package must be published and connected to GitHub once before automated releases can start:
+
+```sh
+npm publish --access public
+npm trust github @aio-proxy/provider-schemas --file .github/workflows/release.yml --repo aio-proxy/provider-schemas --allow-publish --yes
+```
+
+Run the first command with an authenticated npm account after this workflow reaches `main`. Later releases are published from `.github/workflows/release.yml` through OIDC without an `NPM_TOKEN`.
+
+The organization must permit GitHub Actions to create pull requests. Then enable **Allow GitHub Actions to create and approve pull requests** under the repository's Actions workflow permissions so Changesets can maintain the release pull request.
