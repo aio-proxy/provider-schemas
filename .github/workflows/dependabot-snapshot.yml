@@ -46,7 +46,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          printf '%s\n' '---' '"@aio-proxy/provider-schemas": patch' '---' '' 'Update provider dependencies.' > ".changeset/dependabot-${PR_NUMBER}.md"
+          printf '%s\n' '---' '"@aio-proxy/provider-schemas": patch' '---' '' 'Bump provider dependencies.' > ".changeset/dependabot-${PR_NUMBER}.md"
 
       - run: bun run test:unit
 

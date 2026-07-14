@@ -113,7 +113,7 @@ The complete `grep -Ev` expression must continue rejecting all other files.
 Add a workflow step with `PR_NUMBER` from the event and this command:
 
 ```bash
-printf '%s\n' '---' '"@aio-proxy/provider-schemas": patch' '---' '' 'Update provider dependencies.' > ".changeset/dependabot-${PR_NUMBER}.md"
+printf '%s\n' '---' '"@aio-proxy/provider-schemas": patch' '---' '' 'Bump provider dependencies.' > ".changeset/dependabot-${PR_NUMBER}.md"
 ```
 
 - [ ] **Step 3: Include the changeset in the existing bot commit**
