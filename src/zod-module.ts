@@ -543,6 +543,13 @@ const P17GatewayProviderSettingsSchema = z.object({
      */
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
     /**
+     * Custom WebSocket implementation used for streaming transcription. This is
+     * useful for testing or for runtimes without a global WebSocket. A
+     * header-capable implementation is not required — Gateway WebSocket auth is
+     * carried in the subprotocols.
+     */
+    webSocket: z.unknown().optional().describe("Custom WebSocket implementation used for streaming transcription. This is\nuseful for testing or for runtimes without a global WebSocket. A\nheader-capable implementation is not required \u2014 Gateway WebSocket auth is\ncarried in the subprotocols."),
+    /**
      * How frequently to refresh the metadata cache in milliseconds.
      */
     metadataCacheRefreshMillis: z.number().optional().describe("How frequently to refresh the metadata cache in milliseconds.")
