@@ -55,7 +55,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/amazon-bedrock": {
     "factoryName": "createAmazonBedrock",
     "packageName": "@ai-sdk/amazon-bedrock",
-    "packageVersion": "5.0.27",
+    "packageVersion": "5.0.32",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -116,7 +116,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/anthropic": {
     "factoryName": "createAnthropic",
     "packageName": "@ai-sdk/anthropic",
-    "packageVersion": "4.0.18",
+    "packageVersion": "4.0.21",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -165,7 +165,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/anthropic-aws": {
     "factoryName": "createAnthropicAws",
     "packageName": "@ai-sdk/anthropic-aws",
-    "packageVersion": "2.0.10",
+    "packageVersion": "2.0.13",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -268,7 +268,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/azure": {
     "factoryName": "createAzure",
     "packageName": "@ai-sdk/azure",
-    "packageVersion": "4.0.18",
+    "packageVersion": "4.0.21",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -736,7 +736,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/gateway": {
     "factoryName": "createGateway",
     "packageName": "@ai-sdk/gateway",
-    "packageVersion": "4.0.26",
+    "packageVersion": "4.0.28",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -818,7 +818,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/google": {
     "factoryName": "createGoogle",
     "packageName": "@ai-sdk/google",
-    "packageVersion": "4.0.21",
+    "packageVersion": "4.0.24",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -868,7 +868,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/google-vertex": {
     "factoryName": "createGoogleVertex",
     "packageName": "@ai-sdk/google-vertex",
-    "packageVersion": "5.0.25",
+    "packageVersion": "5.0.31",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -914,7 +914,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/google-vertex/anthropic": {
     "factoryName": "createVertexAnthropic",
     "packageName": "@ai-sdk/google-vertex/anthropic",
-    "packageVersion": "5.0.25",
+    "packageVersion": "5.0.31",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1301,7 +1301,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/openai": {
     "factoryName": "createOpenAI",
     "packageName": "@ai-sdk/openai",
-    "packageVersion": "4.0.17",
+    "packageVersion": "4.0.20",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
