@@ -469,7 +469,12 @@ const P14ElevenLabsProviderSettingsSchema = z.object({
      * Custom fetch implementation. You can use it as a middleware to intercept requests,
      * or to provide a custom fetch implementation for e.g. testing.
      */
-    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
+    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
+    /**
+     * Custom WebSocket implementation. Required in runtimes whose native
+     * WebSocket constructor does not support headers for realtime transcription.
+     */
+    webSocket: z.unknown().optional().describe("Custom WebSocket implementation. Required in runtimes whose native\nWebSocket constructor does not support headers for realtime transcription.")
 });
 
 export const P14ProviderOptionsSchema = P14ElevenLabsProviderSettingsSchema;
