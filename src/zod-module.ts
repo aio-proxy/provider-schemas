@@ -293,7 +293,24 @@ const P6BasetenProviderSettingsSchema = z.object({
      * Custom fetch implementation. You can use it as a middleware to intercept requests,
      * or to provide a custom fetch implementation for e.g. testing.
      */
-    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
+    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
+    /**
+     * Opt in to Baseten's native performance client for embeddings, for
+     * client-side batching and request hedging. Pass the `PerformanceClient`
+     * constructor from `@basetenlabs/performance-client`, which you install
+     * yourself:
+     *
+     * ```ts
+     * import { PerformanceClient } from '@basetenlabs/performance-client';
+     *
+     * const baseten = createBaseten({ modelURL, performanceClient: PerformanceClient });
+     * ```
+     *
+     * When omitted, embeddings go over plain HTTP to Baseten's OpenAI-compatible
+     * endpoint — the default, since this NAPI addon cannot load in edge runtimes
+     * and bundlers cannot resolve its platform binaries.
+     */
+    performanceClient: z.unknown().optional().describe("Opt in to Baseten's native performance client for embeddings, for\nclient-side batching and request hedging. Pass the `PerformanceClient`\nconstructor from `@basetenlabs/performance-client`, which you install\nyourself:\n\n```ts\nimport { PerformanceClient } from '@basetenlabs/performance-client';\n\nconst baseten = createBaseten({ modelURL, performanceClient: PerformanceClient });\n```\n\nWhen omitted, embeddings go over plain HTTP to Baseten's OpenAI-compatible\nendpoint \u2014 the default, since this NAPI addon cannot load in edge runtimes\nand bundlers cannot resolve its platform binaries.")
 });
 
 export const P6ProviderOptionsSchema = P6BasetenProviderSettingsSchema;
@@ -316,13 +333,15 @@ const P7BlackForestLabsProviderSettingsSchema = z.object({
      */
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept\nrequests, or to provide a custom fetch implementation for e.g. testing."),
     /**
-     * Poll interval in milliseconds between status checks. Defaults to 500ms.
+     * Poll interval in milliseconds between status checks. Defaults to 500ms for
+     * images and 2s for video.
      */
-    pollIntervalMillis: z.number().optional().describe("Poll interval in milliseconds between status checks. Defaults to 500ms."),
+    pollIntervalMillis: z.number().optional().describe("Poll interval in milliseconds between status checks. Defaults to 500ms for\nimages and 2s for video."),
     /**
-     * Overall timeout in milliseconds for polling before giving up. Defaults to 60s.
+     * Overall timeout in milliseconds for polling before giving up. Defaults to
+     * 60s for images and 10 minutes for video.
      */
-    pollTimeoutMillis: z.number().optional().describe("Overall timeout in milliseconds for polling before giving up. Defaults to 60s.")
+    pollTimeoutMillis: z.number().optional().describe("Overall timeout in milliseconds for polling before giving up. Defaults to\n60s for images and 10 minutes for video.")
 });
 
 export const P7ProviderOptionsSchema = P7BlackForestLabsProviderSettingsSchema;
@@ -469,7 +488,12 @@ const P14ElevenLabsProviderSettingsSchema = z.object({
      * Custom fetch implementation. You can use it as a middleware to intercept requests,
      * or to provide a custom fetch implementation for e.g. testing.
      */
-    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
+    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
+    /**
+     * Custom WebSocket implementation. Required in runtimes whose native
+     * WebSocket constructor does not support headers for realtime transcription.
+     */
+    webSocket: z.unknown().optional().describe("Custom WebSocket implementation. Required in runtimes whose native\nWebSocket constructor does not support headers for realtime transcription.")
 });
 
 export const P14ProviderOptionsSchema = P14ElevenLabsProviderSettingsSchema;
@@ -597,6 +621,11 @@ const P19GoogleProviderSettingsSchema = z.object({
      * Optional function to generate a unique ID for each request.
      */
     generateId: z.unknown().optional().describe("Optional function to generate a unique ID for each request."),
+    /**
+     * Custom WebSocket implementation. This is useful for testing or for
+     * runtimes that need a WebSocket constructor with header support.
+     */
+    webSocket: z.unknown().optional().describe("Custom WebSocket implementation. This is useful for testing or for\nruntimes that need a WebSocket constructor with header support."),
     /**
      * Custom provider name
      * Defaults to 'google.generative-ai'.
@@ -754,15 +783,29 @@ const P24HumeProviderSettingsSchema = z.object({
 export const P24ProviderOptionsSchema = P24HumeProviderSettingsSchema;
 const P25KlingAIProviderSettingsSchema = z.object({
     /**
+     * KlingAI API key. Default value is taken from the `KLINGAI_API_KEY`
+     * environment variable.
+     *
+     * This is the recommended way to authenticate. When set, it takes precedence
+     * over the legacy `accessKey` / `secretKey` pair.
+     */
+    apiKey: z.string().optional().describe("KlingAI API key. Default value is taken from the `KLINGAI_API_KEY`\nenvironment variable.\n\nThis is the recommended way to authenticate. When set, it takes precedence\nover the legacy `accessKey` / `secretKey` pair."),
+    /**
      * KlingAI Access key. Default value is taken from the `KLINGAI_ACCESS_KEY`
      * environment variable.
+     *
+     * Legacy authentication. Used together with `secretKey` to sign a short-lived
+     * JWT. Prefer `apiKey` instead.
      */
-    accessKey: z.string().optional().describe("KlingAI Access key. Default value is taken from the `KLINGAI_ACCESS_KEY`\nenvironment variable."),
+    accessKey: z.string().optional().describe("KlingAI Access key. Default value is taken from the `KLINGAI_ACCESS_KEY`\nenvironment variable.\n\nLegacy authentication. Used together with `secretKey` to sign a short-lived\nJWT. Prefer `apiKey` instead."),
     /**
      * KlingAI Secret key. Default value is taken from the `KLINGAI_SECRET_KEY`
      * environment variable.
+     *
+     * Legacy authentication. Used together with `accessKey` to sign a short-lived
+     * JWT. Prefer `apiKey` instead.
      */
-    secretKey: z.string().optional().describe("KlingAI Secret key. Default value is taken from the `KLINGAI_SECRET_KEY`\nenvironment variable."),
+    secretKey: z.string().optional().describe("KlingAI Secret key. Default value is taken from the `KLINGAI_SECRET_KEY`\nenvironment variable.\n\nLegacy authentication. Used together with `accessKey` to sign a short-lived\nJWT. Prefer `apiKey` instead."),
     /**
      * Base URL for the API calls.
      */
