@@ -234,10 +234,11 @@ const P5AzureOpenAIProviderSettingsSchema = z.object({
      * Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.
      * When a baseURL is provided, the resourceName is ignored.
      *
-     * With an Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.
+     * With an unversioned Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.
+     * Azure OpenAI base URLs that already end in `/openai/v1` are used as-is.
      * With a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`.
      */
-    baseURL: z.string().optional().describe("Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.\nWhen a baseURL is provided, the resourceName is ignored.\n\nWith an Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.\nWith a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`."),
+    baseURL: z.string().optional().describe("Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.\nWhen a baseURL is provided, the resourceName is ignored.\n\nWith an unversioned Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.\nAzure OpenAI base URLs that already end in `/openai/v1` are used as-is.\nWith a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`."),
     /**
      * API key for authenticating requests.
      */
@@ -258,9 +259,10 @@ const P5AzureOpenAIProviderSettingsSchema = z.object({
      */
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
     /**
-     * Custom api version to use. Defaults to `preview`.
+     * Custom api version to use. Defaults to `v1`.
+     * Complete v1 base URLs are used as-is.
      */
-    apiVersion: z.string().optional().describe("Custom api version to use. Defaults to `preview`."),
+    apiVersion: z.string().optional().describe("Custom api version to use. Defaults to `v1`.\nComplete v1 base URLs are used as-is."),
     /**
      * Use deployment-based URLs for specific model types. Set to true to use legacy deployment format:
      * `{baseURL}/deployments/{deploymentId}{path}?api-version={apiVersion}` instead of
@@ -666,7 +668,13 @@ const P20GoogleVertexProviderSettings$1Schema = z.object({
     /**
      * Base URL for the Google Vertex API calls.
      */
-    baseURL: z.string().optional().describe("Base URL for the Google Vertex API calls.")
+    baseURL: z.string().optional().describe("Base URL for the Google Vertex API calls."),
+    /**
+     * Custom WebSocket implementation for streaming transcription. Useful for
+     * runtimes that need a WebSocket constructor with header support (e.g. the
+     * `ws` package in Node.js, which Vertex's OAuth Bearer header requires).
+     */
+    webSocket: z.unknown().optional().describe("Custom WebSocket implementation for streaming transcription. Useful for\nruntimes that need a WebSocket constructor with header support (e.g. the\n`ws` package in Node.js, which Vertex's OAuth Bearer header requires).")
 });
 
 const P20GoogleVertexProviderSettingsSchema = P20GoogleVertexProviderSettings$1Schema.extend({
@@ -928,7 +936,13 @@ const P30OpenResponsesProviderSettingsSchema = z.object({
      * Custom fetch implementation. You can use it as a middleware to intercept requests,
      * or to provide a custom fetch implementation for e.g. testing.
      */
-    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
+    fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
+    /**
+     * Codecs for Open Responses extension tools, items, and streaming events.
+     *
+     * @experimental This API may change in a future release.
+     */
+    experimental_extensions: z.unknown().optional().describe("Codecs for Open Responses extension tools, items, and streaming events.")
 });
 
 export const P30ProviderOptionsSchema = P30OpenResponsesProviderSettingsSchema;
