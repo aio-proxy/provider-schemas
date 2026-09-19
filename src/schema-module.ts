@@ -1664,6 +1664,41 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
       }
     ]
   },
+  "@ai-sdk/typesafe-ai": {
+    "factoryName": "createTypeSafeAi",
+    "packageName": "@ai-sdk/typesafe-ai",
+    "packageVersion": "3.0.4",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": true,
+      "properties": {
+        "apiKey": {
+          "description": "API key. Defaults to the TYPESAFE_AI_API_KEY environment variable.",
+          "type": "string"
+        },
+        "baseURL": {
+          "description": "API base URL. Defaults to https://api.typesafe.ai/v1.",
+          "type": "string"
+        },
+        "headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "warnings": [
+      {
+        "code": "unsupported_optional",
+        "path": "fetch"
+      }
+    ]
+  },
   "@ai-sdk/vercel": {
     "factoryName": "createVercel",
     "packageName": "@ai-sdk/vercel",

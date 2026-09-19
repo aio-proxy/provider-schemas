@@ -1157,7 +1157,21 @@ const P38TogetherAIProviderSettingsSchema = z.object({
 });
 
 export const P38ProviderOptionsSchema = P38TogetherAIProviderSettingsSchema;
-const P39VercelProviderSettingsSchema = z.object({
+const P39TypeSafeAiProviderSettingsSchema = z.object({
+    /**
+     * API key. Defaults to the TYPESAFE_AI_API_KEY environment variable.
+     */
+    apiKey: z.string().optional().describe("API key. Defaults to the TYPESAFE_AI_API_KEY environment variable."),
+    /**
+     * API base URL. Defaults to https://api.typesafe.ai/v1.
+     */
+    baseURL: z.string().optional().describe("API base URL. Defaults to https://api.typesafe.ai/v1."),
+    headers: z.record(z.string(), z.string()).optional(),
+    fetch: z.unknown().optional()
+});
+
+export const P39ProviderOptionsSchema = P39TypeSafeAiProviderSettingsSchema;
+const P40VercelProviderSettingsSchema = z.object({
     /**
      * Vercel API key.
      */
@@ -1177,16 +1191,16 @@ const P39VercelProviderSettingsSchema = z.object({
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing.")
 });
 
-export const P39ProviderOptionsSchema = P39VercelProviderSettingsSchema;
-const P40VoyageProviderSettingsSchema = z.object({
+export const P40ProviderOptionsSchema = P40VercelProviderSettingsSchema;
+const P41VoyageProviderSettingsSchema = z.object({
     baseURL: z.string().optional(),
     apiKey: z.string().optional(),
     headers: z.record(z.string(), z.string()).optional(),
     fetch: z.unknown().optional()
 });
 
-export const P40ProviderOptionsSchema = P40VoyageProviderSettingsSchema;
-const P41XaiProviderSettingsSchema = z.object({
+export const P41ProviderOptionsSchema = P41VoyageProviderSettingsSchema;
+const P42XaiProviderSettingsSchema = z.object({
     /**
      * Base URL for the xAI API calls.
      */
@@ -1211,8 +1225,8 @@ const P41XaiProviderSettingsSchema = z.object({
     webSocket: z.unknown().optional().describe("Custom WebSocket implementation. Required in runtimes whose native\nWebSocket constructor does not support headers for xAI streaming STT.")
 });
 
-export const P41ProviderOptionsSchema = P41XaiProviderSettingsSchema;
-const P42OpenRouterProviderSettingsSchema = z.object({
+export const P42ProviderOptionsSchema = P42XaiProviderSettingsSchema;
+const P43OpenRouterProviderSettingsSchema = z.object({
     /**
   Base URL for the OpenRouter API calls.
      */
@@ -1261,7 +1275,7 @@ const P42OpenRouterProviderSettingsSchema = z.object({
     appUrl: z.string().optional().describe("Your app's URL or identifier. Sets the `HTTP-Referer` header on every request,\nused to identify your app on the openrouter.ai dashboard.")
 });
 
-export const P42ProviderOptionsSchema = P42OpenRouterProviderSettingsSchema;
+export const P43ProviderOptionsSchema = P43OpenRouterProviderSettingsSchema;
 
 export const PROVIDER_OPTIONS_ZOD_SCHEMAS: Readonly<Record<string, z.ZodType>> = {
   "@ai-sdk/alibaba": P0ProviderOptionsSchema,
@@ -1303,8 +1317,9 @@ export const PROVIDER_OPTIONS_ZOD_SCHEMAS: Readonly<Record<string, z.ZodType>> =
   "@ai-sdk/replicate": P36ProviderOptionsSchema,
   "@ai-sdk/revai": P37ProviderOptionsSchema,
   "@ai-sdk/togetherai": P38ProviderOptionsSchema,
-  "@ai-sdk/vercel": P39ProviderOptionsSchema,
-  "@ai-sdk/voyage": P40ProviderOptionsSchema,
-  "@ai-sdk/xai": P41ProviderOptionsSchema,
-  "@openrouter/ai-sdk-provider": P42ProviderOptionsSchema,
+  "@ai-sdk/typesafe-ai": P39ProviderOptionsSchema,
+  "@ai-sdk/vercel": P40ProviderOptionsSchema,
+  "@ai-sdk/voyage": P41ProviderOptionsSchema,
+  "@ai-sdk/xai": P42ProviderOptionsSchema,
+  "@openrouter/ai-sdk-provider": P43ProviderOptionsSchema,
 };

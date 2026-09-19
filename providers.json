@@ -42,6 +42,7 @@
   { "packageName": "@ai-sdk/replicate", "factoryName": "createReplicate" },
   { "packageName": "@ai-sdk/revai", "factoryName": "createRevai" },
   { "packageName": "@ai-sdk/togetherai", "factoryName": "createTogetherAI" },
+  { "packageName": "@ai-sdk/typesafe-ai", "factoryName": "createTypeSafeAi" },
   { "packageName": "@ai-sdk/vercel", "factoryName": "createVercel" },
   { "packageName": "@ai-sdk/voyage", "factoryName": "createVoyage" },
   { "packageName": "@ai-sdk/xai", "factoryName": "createXai" },

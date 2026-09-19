@@ -84,6 +84,7 @@
     "@ai-sdk/replicate": "3.0.28",
     "@ai-sdk/revai": "3.0.27",
     "@ai-sdk/togetherai": "3.0.31",
+    "@ai-sdk/typesafe-ai": "3.0.4",
     "@ai-sdk/vercel": "3.0.30",
     "@ai-sdk/voyage": "2.0.27",
     "@ai-sdk/xai": "4.0.38",

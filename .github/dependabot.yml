@@ -45,6 +45,7 @@ updates:
       - dependency-name: "@ai-sdk/replicate"
       - dependency-name: "@ai-sdk/revai"
       - dependency-name: "@ai-sdk/togetherai"
+      - dependency-name: "@ai-sdk/typesafe-ai"
       - dependency-name: "@ai-sdk/vercel"
       - dependency-name: "@ai-sdk/voyage"
       - dependency-name: "@ai-sdk/xai"
