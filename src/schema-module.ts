@@ -5,7 +5,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/alibaba": {
     "factoryName": "createAlibaba",
     "packageName": "@ai-sdk/alibaba",
-    "packageVersion": "2.0.32",
+    "packageVersion": "2.0.39",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -55,7 +55,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/amazon-bedrock": {
     "factoryName": "createAmazonBedrock",
     "packageName": "@ai-sdk/amazon-bedrock",
-    "packageVersion": "5.0.55",
+    "packageVersion": "5.0.69",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -116,7 +116,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/anthropic": {
     "factoryName": "createAnthropic",
     "packageName": "@ai-sdk/anthropic",
-    "packageVersion": "4.0.38",
+    "packageVersion": "4.0.46",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -165,7 +165,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/anthropic-aws": {
     "factoryName": "createAnthropicAws",
     "packageName": "@ai-sdk/anthropic-aws",
-    "packageVersion": "2.0.30",
+    "packageVersion": "2.0.38",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -235,7 +235,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/assemblyai": {
     "factoryName": "createAssemblyAI",
     "packageName": "@ai-sdk/assemblyai",
-    "packageVersion": "3.0.27",
+    "packageVersion": "3.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -268,7 +268,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/azure": {
     "factoryName": "createAzure",
     "packageName": "@ai-sdk/azure",
-    "packageVersion": "4.0.42",
+    "packageVersion": "4.0.56",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -278,11 +278,11 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
           "type": "string"
         },
         "apiVersion": {
-          "description": "Custom api version to use. Defaults to `preview`.",
+          "description": "Custom api version to use. Defaults to `v1`.\nComplete v1 base URLs are used as-is.",
           "type": "string"
         },
         "baseURL": {
-          "description": "Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.\nWhen a baseURL is provided, the resourceName is ignored.\n\nWith an Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.\nWith a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`.",
+          "description": "Use a different URL prefix for API calls, e.g. to use proxy servers. Either this or `resourceName` can be used.\nWhen a baseURL is provided, the resourceName is ignored.\n\nWith an unversioned Azure OpenAI baseURL, the resolved URL is `{baseURL}/v1{path}`.\nAzure OpenAI base URLs that already end in `/openai/v1` are used as-is.\nWith a non-Azure custom gateway baseURL, the resolved URL is `{baseURL}{path}`.",
           "type": "string"
         },
         "headers": {
@@ -321,7 +321,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/baseten": {
     "factoryName": "createBaseten",
     "packageName": "@ai-sdk/baseten",
-    "packageVersion": "2.1.8",
+    "packageVersion": "2.1.19",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -366,7 +366,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/black-forest-labs": {
     "factoryName": "createBlackForestLabs",
     "packageName": "@ai-sdk/black-forest-labs",
-    "packageVersion": "2.0.28",
+    "packageVersion": "2.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -411,7 +411,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/bytedance": {
     "factoryName": "createByteDance",
     "packageName": "@ai-sdk/bytedance",
-    "packageVersion": "2.0.29",
+    "packageVersion": "2.0.37",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -448,7 +448,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/cerebras": {
     "factoryName": "createCerebras",
     "packageName": "@ai-sdk/cerebras",
-    "packageVersion": "3.0.30",
+    "packageVersion": "3.0.41",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -485,7 +485,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/cohere": {
     "factoryName": "createCohere",
     "packageName": "@ai-sdk/cohere",
-    "packageVersion": "4.0.27",
+    "packageVersion": "4.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -526,7 +526,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/deepgram": {
     "factoryName": "createDeepgram",
     "packageName": "@ai-sdk/deepgram",
-    "packageVersion": "3.0.27",
+    "packageVersion": "3.1.5",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -559,7 +559,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/deepinfra": {
     "factoryName": "createDeepInfra",
     "packageName": "@ai-sdk/deepinfra",
-    "packageVersion": "3.0.30",
+    "packageVersion": "3.0.41",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -596,7 +596,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/deepseek": {
     "factoryName": "createDeepSeek",
     "packageName": "@ai-sdk/deepseek",
-    "packageVersion": "3.0.28",
+    "packageVersion": "3.0.37",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -633,7 +633,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/elevenlabs": {
     "factoryName": "createElevenLabs",
     "packageName": "@ai-sdk/elevenlabs",
-    "packageVersion": "3.0.28",
+    "packageVersion": "3.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -670,7 +670,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/fal": {
     "factoryName": "createFal",
     "packageName": "@ai-sdk/fal",
-    "packageVersion": "3.0.28",
+    "packageVersion": "3.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -707,7 +707,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/fireworks": {
     "factoryName": "createFireworks",
     "packageName": "@ai-sdk/fireworks",
-    "packageVersion": "3.0.32",
+    "packageVersion": "3.0.44",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -744,7 +744,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/gateway": {
     "factoryName": "createGateway",
     "packageName": "@ai-sdk/gateway",
-    "packageVersion": "4.0.52",
+    "packageVersion": "4.0.70",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -793,7 +793,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/gladia": {
     "factoryName": "createGladia",
     "packageName": "@ai-sdk/gladia",
-    "packageVersion": "3.0.27",
+    "packageVersion": "3.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -826,7 +826,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/google": {
     "factoryName": "createGoogle",
     "packageName": "@ai-sdk/google",
-    "packageVersion": "4.0.44",
+    "packageVersion": "4.0.59",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -880,7 +880,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/google-vertex": {
     "factoryName": "createGoogleVertex",
     "packageName": "@ai-sdk/google-vertex",
-    "packageVersion": "5.0.53",
+    "packageVersion": "5.0.71",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -920,13 +920,17 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
       {
         "code": "unresolved_optional",
         "path": "headers"
+      },
+      {
+        "code": "unresolved_optional",
+        "path": "webSocket"
       }
     ]
   },
   "@ai-sdk/google-vertex/anthropic": {
     "factoryName": "createVertexAnthropic",
     "packageName": "@ai-sdk/google-vertex/anthropic",
-    "packageVersion": "5.0.53",
+    "packageVersion": "5.0.71",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -968,7 +972,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/groq": {
     "factoryName": "createGroq",
     "packageName": "@ai-sdk/groq",
-    "packageVersion": "4.0.28",
+    "packageVersion": "4.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1005,7 +1009,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/huggingface": {
     "factoryName": "createHuggingFace",
     "packageName": "@ai-sdk/huggingface",
-    "packageVersion": "2.0.30",
+    "packageVersion": "2.0.41",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1046,7 +1050,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/hume": {
     "factoryName": "createHume",
     "packageName": "@ai-sdk/hume",
-    "packageVersion": "3.0.27",
+    "packageVersion": "3.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1079,7 +1083,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/klingai": {
     "factoryName": "createKlingAI",
     "packageName": "@ai-sdk/klingai",
-    "packageVersion": "4.0.29",
+    "packageVersion": "4.0.36",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1124,7 +1128,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/lmnt": {
     "factoryName": "createLMNT",
     "packageName": "@ai-sdk/lmnt",
-    "packageVersion": "3.0.27",
+    "packageVersion": "3.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1157,7 +1161,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/luma": {
     "factoryName": "createLuma",
     "packageName": "@ai-sdk/luma",
-    "packageVersion": "3.0.28",
+    "packageVersion": "3.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1194,7 +1198,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/mistral": {
     "factoryName": "createMistral",
     "packageName": "@ai-sdk/mistral",
-    "packageVersion": "4.0.29",
+    "packageVersion": "4.0.37",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1235,7 +1239,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/moonshotai": {
     "factoryName": "createMoonshotAI",
     "packageName": "@ai-sdk/moonshotai",
-    "packageVersion": "3.0.34",
+    "packageVersion": "3.0.43",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1272,7 +1276,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/open-responses": {
     "factoryName": "createOpenResponses",
     "packageName": "@ai-sdk/open-responses",
-    "packageVersion": "2.0.27",
+    "packageVersion": "2.0.36",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1309,6 +1313,10 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     },
     "warnings": [
       {
+        "code": "unsupported_optional",
+        "path": "experimental_extensions"
+      },
+      {
         "code": "unresolved_optional",
         "path": "fetch"
       }
@@ -1317,7 +1325,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/openai": {
     "factoryName": "createOpenAI",
     "packageName": "@ai-sdk/openai",
-    "packageVersion": "4.0.41",
+    "packageVersion": "4.0.53",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1370,7 +1378,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/openai-compatible": {
     "factoryName": "createOpenAICompatible",
     "packageName": "@ai-sdk/openai-compatible",
-    "packageVersion": "3.0.30",
+    "packageVersion": "3.0.41",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1449,7 +1457,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/perplexity": {
     "factoryName": "createPerplexity",
     "packageName": "@ai-sdk/perplexity",
-    "packageVersion": "4.0.29",
+    "packageVersion": "4.0.36",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1486,7 +1494,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/prodia": {
     "factoryName": "createProdia",
     "packageName": "@ai-sdk/prodia",
-    "packageVersion": "2.0.28",
+    "packageVersion": "2.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1523,7 +1531,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/quiverai": {
     "factoryName": "createQuiverAI",
     "packageName": "@ai-sdk/quiverai",
-    "packageVersion": "2.0.27",
+    "packageVersion": "2.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1560,7 +1568,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/replicate": {
     "factoryName": "createReplicate",
     "packageName": "@ai-sdk/replicate",
-    "packageVersion": "3.0.28",
+    "packageVersion": "3.0.35",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1597,7 +1605,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/revai": {
     "factoryName": "createRevai",
     "packageName": "@ai-sdk/revai",
-    "packageVersion": "3.0.27",
+    "packageVersion": "3.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1630,7 +1638,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/togetherai": {
     "factoryName": "createTogetherAI",
     "packageName": "@ai-sdk/togetherai",
-    "packageVersion": "3.0.31",
+    "packageVersion": "3.0.42",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1660,6 +1668,41 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     "warnings": [
       {
         "code": "unresolved_optional",
+        "path": "fetch"
+      }
+    ]
+  },
+  "@ai-sdk/typesafe-ai": {
+    "factoryName": "createTypeSafeAi",
+    "packageName": "@ai-sdk/typesafe-ai",
+    "packageVersion": "3.0.4",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": true,
+      "properties": {
+        "apiKey": {
+          "description": "API key. Defaults to the TYPESAFE_AI_API_KEY environment variable.",
+          "type": "string"
+        },
+        "baseURL": {
+          "description": "API base URL. Defaults to https://api.typesafe.ai/v1.",
+          "type": "string"
+        },
+        "headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "warnings": [
+      {
+        "code": "unsupported_optional",
         "path": "fetch"
       }
     ]
@@ -1696,7 +1739,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
     },
     "warnings": [
       {
-        "code": "unresolved_optional",
+        "code": "unsupported_optional",
         "path": "fetch"
       }
     ]
@@ -1704,7 +1747,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/voyage": {
     "factoryName": "createVoyage",
     "packageName": "@ai-sdk/voyage",
-    "packageVersion": "2.0.27",
+    "packageVersion": "2.0.34",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,
@@ -1737,7 +1780,7 @@ export const PROVIDER_OPTIONS_SCHEMAS: Readonly<Record<string, ProviderOptionsSc
   "@ai-sdk/xai": {
     "factoryName": "createXai",
     "packageName": "@ai-sdk/xai",
-    "packageVersion": "4.0.38",
+    "packageVersion": "4.0.50",
     "schema": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": true,

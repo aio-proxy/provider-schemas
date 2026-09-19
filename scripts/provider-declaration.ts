@@ -85,6 +85,15 @@ const unsupportedType = (typeNode: TypeNode, packageRoot: string, seen = new Set
       const failure = unsupportedType(declaration.getTypeNodeOrThrow(), packageRoot, seen);
       if (failure) return failure;
     }
+    if (Node.isInterfaceDeclaration(declaration)) {
+      if (declaration.getMethods().length > 0) return "unsupported_optional";
+      for (const property of declaration.getProperties()) {
+        const propertyType = property.getTypeNode();
+        if (!propertyType) continue;
+        const failure = unsupportedType(propertyType, packageRoot, seen);
+        if (failure) return failure;
+      }
+    }
   }
   return undefined;
 };

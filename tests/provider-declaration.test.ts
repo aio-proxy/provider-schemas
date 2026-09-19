@@ -59,6 +59,29 @@ describe("provider declaration extraction", () => {
     expect(result.warnings).toEqual([{ code: "unresolved_optional", path: "fetch" }]);
   });
 
+  test("omits an optional property whose local interface has methods", async () => {
+    const root = await fixture({
+      "index.d.ts": `
+        export interface Extension {
+          id: string;
+          encode?(options: { name: string }): unknown;
+        }
+        export interface FixtureOptions { apiKey?: string; extensions?: readonly Extension[] }
+        export declare function createFixture(options?: FixtureOptions): unknown;
+      `,
+    });
+
+    const result = await extractProviderDeclaration({
+      packageRoot: root,
+      declarationEntry: join(root, "index.d.ts"),
+      factoryName: "createFixture",
+    });
+
+    expect(result.sourceText).toContain("extensions?: unknown");
+    expect(result.sourceText).not.toContain("encode?");
+    expect(result.warnings).toEqual([{ code: "unsupported_optional", path: "extensions" }]);
+  });
+
   test("rejects an unsupported required root property", async () => {
     const root = await fixture({
       "index.d.ts": `
