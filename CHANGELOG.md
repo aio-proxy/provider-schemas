@@ -1,5 +1,11 @@
 # @aio-proxy/provider-schemas
 
+## 0.2.0
+
+### Minor Changes
+
+- dbc69b6: Add `@ai-sdk/typesafe-ai` factory option schemas.
+
 ## 0.1.2
 
 ### Patch Changes
