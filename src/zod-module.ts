@@ -674,7 +674,17 @@ const P20GoogleVertexProviderSettings$1Schema = z.object({
      * runtimes that need a WebSocket constructor with header support (e.g. the
      * `ws` package in Node.js, which Vertex's OAuth Bearer header requires).
      */
-    webSocket: z.unknown().optional().describe("Custom WebSocket implementation for streaming transcription. Useful for\nruntimes that need a WebSocket constructor with header support (e.g. the\n`ws` package in Node.js, which Vertex's OAuth Bearer header requires).")
+    webSocket: z.unknown().optional().describe("Custom WebSocket implementation for streaming transcription. Useful for\nruntimes that need a WebSocket constructor with header support (e.g. the\n`ws` package in Node.js, which Vertex's OAuth Bearer header requires)."),
+    /**
+     * Settings for downloading remote files in tool results before sending them
+     * to Vertex as inline data.
+     */
+    toolResultDownloads: z.object({
+        /**
+         * Maximum size in bytes for each downloaded file. Defaults to 7 MiB.
+         */
+        maxBytes: z.number().optional().describe("Maximum size in bytes for each downloaded file. Defaults to 7 MiB.")
+    }).optional().describe("Settings for downloading remote files in tool results before sending them\nto Vertex as inline data.")
 });
 
 const P20GoogleVertexProviderSettingsSchema = P20GoogleVertexProviderSettings$1Schema.extend({
@@ -937,6 +947,14 @@ const P30OpenResponsesProviderSettingsSchema = z.object({
      * or to provide a custom fetch implementation for e.g. testing.
      */
     fetch: z.unknown().optional().describe("Custom fetch implementation. You can use it as a middleware to intercept requests,\nor to provide a custom fetch implementation for e.g. testing."),
+    /**
+     * Whether to serialize assistant history using the strict OpenAI Responses
+     * input schemas. Assistant messages without an item ID are sent as easy input
+     * messages, while messages with an item ID are sent as complete output items.
+     *
+     * @default false
+     */
+    strictResponseInput: z.boolean().optional().describe("Whether to serialize assistant history using the strict OpenAI Responses\ninput schemas. Assistant messages without an item ID are sent as easy input\nmessages, while messages with an item ID are sent as complete output items.").default(false),
     /**
      * Codecs for Open Responses extension tools, items, and streaming events.
      *
@@ -1249,6 +1267,13 @@ const P43OpenRouterProviderSettingsSchema = z.object({
   @deprecated Use `baseURL` instead.
        */
     baseUrl: z.string().optional(),
+    /**
+  Base URL for the Decisions API used by `evaluationModel()`. Defaults to
+  `https://openrouter.ai/api/alpha`; when `baseURL` ends in `/v1` it defaults
+  to the same URL with `/alpha` in place of `/v1`. Required when `baseURL`
+  points at a proxy path that does not end in `/v1`.
+     */
+    decisionsBaseURL: z.string().optional().describe("Base URL for the Decisions API used by `evaluationModel()`. Defaults to\n`https://openrouter.ai/api/alpha`; when `baseURL` ends in `/v1` it defaults\nto the same URL with `/alpha` in place of `/v1`. Required when `baseURL`\npoints at a proxy path that does not end in `/v1`."),
     /**
   API key for authenticating requests.
      */
